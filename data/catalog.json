@@ -1,20 +1,20 @@
 {
- "builtAt": "2026-07-27T23:27:52.523Z",
- "shelf": 15,
+ "builtAt": "2026-07-27T23:41:49.004Z",
+ "shelf": 12,
  "target": 30,
  "balanced": true,
  "sample": true,
  "requests": 33,
  "counts": {
-  "cpu": 15,
-  "cooler": 15,
-  "mobo": 15,
-  "ram": 15,
-  "storage": 15,
-  "gpu": 15,
-  "psu": 15,
-  "case": 15,
-  "monitor": 15
+  "cpu": 12,
+  "cooler": 12,
+  "mobo": 12,
+  "ram": 12,
+  "storage": 12,
+  "gpu": 12,
+  "psu": 12,
+  "case": 12,
+  "monitor": 12
  },
  "categories": {
   "cpu": [
@@ -161,42 +161,6 @@
     "reviews": 732,
     "prime": true,
     "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0014",
-    "title": "AMD Ryzen 5 5600 Gaming Desktop Processor — AM4, up to 4.4 GHz",
-    "price": 126,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0014.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0014",
-    "rating": 3.6,
-    "reviews": 3427,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0032",
-    "title": "Intel Core i3-12100 Gaming Desktop Processor — LGA1700, up to 4.3 GHz",
-    "price": 173.25,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0032.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0032",
-    "rating": 3.6,
-    "reviews": 2693,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0012",
-    "title": "AMD Ryzen 5 5500 Gaming Desktop Processor — AM4, up to 4.2 GHz",
-    "price": 126,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0012.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0012",
-    "rating": 3.8,
-    "reviews": 1711,
-    "prime": false,
-    "bestSeller": false
    }
   ],
   "cooler": [
@@ -207,8 +171,8 @@
     "was": null,
     "image": "https://m.media-amazon.com/images/I/P2000cooler.jpg",
     "url": "https://www.amazon.com/dp/P2000cooler",
-    "rating": 4.6,
-    "reviews": 44,
+    "rating": 4.8,
+    "reviews": 650,
     "prime": true,
     "bestSeller": true
    },
@@ -225,62 +189,74 @@
     "bestSeller": false
    },
    {
-    "asin": "P2004cooler",
-    "title": "MSI Cooler Master Hyper 212 Air CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
-    "price": 39,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/P2004cooler.jpg",
-    "url": "https://www.amazon.com/dp/P2004cooler",
-    "rating": 4.3,
-    "reviews": 2395,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0885",
-    "title": "Corsair iCUE H150i ELITE 360mm AIO Liquid CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
-    "price": 160,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0885.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0885",
-    "rating": 4.5,
-    "reviews": 2241,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "P2002cooler",
-    "title": "Gigabyte DeepCool AK620 Air CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
-    "price": 39,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/P2002cooler.jpg",
-    "url": "https://www.amazon.com/dp/P2002cooler",
-    "rating": 4.5,
-    "reviews": 1965,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
     "asin": "P2009cooler",
     "title": "ASUS Thermalright Frozen Notte 360 360mm AIO Liquid CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
     "price": 160,
     "was": null,
     "image": "https://m.media-amazon.com/images/I/P2009cooler.jpg",
     "url": "https://www.amazon.com/dp/P2009cooler",
-    "rating": 4.6,
-    "reviews": 1796,
+    "rating": 4.9,
+    "reviews": 3625,
     "prime": true,
     "bestSeller": false
    },
    {
-    "asin": "P2015cooler",
+    "asin": "P2019cooler",
+    "title": "Cooler Master Corsair iCUE H150i ELITE 360mm AIO Liquid CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
+    "price": 160,
+    "was": null,
+    "image": "https://m.media-amazon.com/images/I/P2019cooler.jpg",
+    "url": "https://www.amazon.com/dp/P2019cooler",
+    "rating": 4.7,
+    "reviews": 2761,
+    "prime": false,
+    "bestSeller": false
+   },
+   {
+    "asin": "P2016cooler",
+    "title": "MSI Cooler Master Hyper 212 Air CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
+    "price": 39,
+    "was": null,
+    "image": "https://m.media-amazon.com/images/I/P2016cooler.jpg",
+    "url": "https://www.amazon.com/dp/P2016cooler",
+    "rating": 4.9,
+    "reviews": 1513,
+    "prime": false,
+    "bestSeller": false
+   },
+   {
+    "asin": "SAMPLE0880",
+    "title": "DeepCool AK620 Air CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
+    "price": 39,
+    "was": null,
+    "image": "https://m.media-amazon.com/images/I/SAMPLE0880.jpg",
+    "url": "https://www.amazon.com/dp/SAMPLE0880",
+    "rating": 4.6,
+    "reviews": 1374,
+    "prime": false,
+    "bestSeller": false
+   },
+   {
+    "asin": "P2017cooler",
+    "title": "ASUS Noctua NH-L9i low profile Air CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
+    "price": 109,
+    "was": null,
+    "image": "https://m.media-amazon.com/images/I/P2017cooler.jpg",
+    "url": "https://www.amazon.com/dp/P2017cooler",
+    "rating": 4.3,
+    "reviews": 552,
+    "prime": false,
+    "bestSeller": false
+   },
+   {
+    "asin": "P2003cooler",
     "title": "Cooler Master be quiet! Dark Rock Pro 5 Air CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
     "price": 109,
     "was": null,
-    "image": "https://m.media-amazon.com/images/I/P2015cooler.jpg",
-    "url": "https://www.amazon.com/dp/P2015cooler",
-    "rating": 4.7,
-    "reviews": 1530,
+    "image": "https://m.media-amazon.com/images/I/P2003cooler.jpg",
+    "url": "https://www.amazon.com/dp/P2003cooler",
+    "rating": 4.4,
+    "reviews": 288,
     "prime": true,
     "bestSeller": false
    },
@@ -291,44 +267,32 @@
     "was": null,
     "image": "https://m.media-amazon.com/images/I/P2008cooler.jpg",
     "url": "https://www.amazon.com/dp/P2008cooler",
-    "rating": 4.4,
-    "reviews": 949,
+    "rating": 4.1,
+    "reviews": 2395,
     "prime": false,
     "bestSeller": false
    },
    {
-    "asin": "P2011cooler",
-    "title": "Cooler Master DeepCool LS520 SE 240mm AIO Liquid CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
-    "price": 130,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/P2011cooler.jpg",
-    "url": "https://www.amazon.com/dp/P2011cooler",
-    "rating": 4.8,
-    "reviews": 274,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "P2006cooler",
+    "asin": "P2018cooler",
     "title": "Gigabyte ARCTIC Liquid Freezer III 240 240mm AIO Liquid CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
     "price": 130,
     "was": null,
-    "image": "https://m.media-amazon.com/images/I/P2006cooler.jpg",
-    "url": "https://www.amazon.com/dp/P2006cooler",
-    "rating": 4,
-    "reviews": 3272,
+    "image": "https://m.media-amazon.com/images/I/P2018cooler.jpg",
+    "url": "https://www.amazon.com/dp/P2018cooler",
+    "rating": 3.7,
+    "reviews": 6294,
     "prime": true,
     "bestSeller": false
    },
    {
-    "asin": "SAMPLE0883",
-    "title": "Noctua NH-L9i low profile Air CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
-    "price": 109,
+    "asin": "SAMPLE0889",
+    "title": "DeepCool LS520 SE 240mm AIO Liquid CPU Cooler for AM5 AM4 LGA1851 LGA1700 LGA1200",
+    "price": 130,
     "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0883.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0883",
-    "rating": 3.9,
-    "reviews": 114,
+    "image": "https://m.media-amazon.com/images/I/SAMPLE0889.jpg",
+    "url": "https://www.amazon.com/dp/SAMPLE0889",
+    "rating": 3.6,
+    "reviews": 5101,
     "prime": false,
     "bestSeller": false
    },
@@ -341,42 +305,6 @@
     "url": "https://www.amazon.com/dp/SAMPLE0888",
     "rating": 3.8,
     "reviews": 1992,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "JUNK0cooler",
-    "title": "Anti-Static Wrist Strap for PC Building",
-    "price": 9.99,
-    "was": null,
-    "image": null,
-    "url": "https://www.amazon.com/dp/JUNK0cooler",
-    "rating": null,
-    "reviews": null,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "JUNK1cooler",
-    "title": "Replacement Screw Kit compatible with Motherboard Standoffs",
-    "price": 9.99,
-    "was": null,
-    "image": null,
-    "url": "https://www.amazon.com/dp/JUNK1cooler",
-    "rating": null,
-    "reviews": null,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "JUNK2cooler",
-    "title": "GPU Support Bracket Graphics Card Sag Holder",
-    "price": 9.99,
-    "was": null,
-    "image": null,
-    "url": "https://www.amazon.com/dp/JUNK2cooler",
-    "rating": null,
-    "reviews": null,
     "prime": false,
     "bestSeller": false
    }
@@ -525,42 +453,6 @@
     "reviews": 2475,
     "prime": false,
     "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0553",
-    "title": "ASRock Steel Legend B850 Micro-ATX Gaming Motherboard (AM5, DDR5, PCIe 4.0, M.2, USB 3.2)",
-    "price": 227,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0553.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0553",
-    "rating": 4.4,
-    "reviews": 2397,
-    "prime": true,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0535",
-    "title": "ASUS TUF GAMING X870 ATX Gaming Motherboard (AM5, DDR5, PCIe 4.0, M.2, WiFi 6E, USB 3.2)",
-    "price": 301,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0535.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0535",
-    "rating": 4.9,
-    "reviews": 2223,
-    "prime": true,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0554",
-    "title": "ASUS ROG STRIX B840 ATX Gaming Motherboard (AM5, DDR5, PCIe 4.0, M.2, USB 3.2)",
-    "price": 109,
-    "was": 130.8,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0554.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0554",
-    "rating": 4.5,
-    "reviews": 1856,
-    "prime": false,
-    "bestSeller": false
    }
   ],
   "ram": [
@@ -705,42 +597,6 @@
     "url": "https://www.amazon.com/dp/SAMPLE0691",
     "rating": 3.9,
     "reviews": 5052,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0714",
-    "title": "Kingston FURY Beast 32GB (2 x 16GB) DDR5 7200 CL30 Desktop Memory Kit",
-    "price": 915,
-    "was": 1043.1,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0714.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0714",
-    "rating": 4.1,
-    "reviews": 4446,
-    "prime": true,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0704",
-    "title": "Corsair Vengeance 32GB (2 x 16GB) DDR5 6000 CL30 Desktop Memory Kit",
-    "price": 685,
-    "was": 780.9,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0704.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0704",
-    "rating": 4.1,
-    "reviews": 4130,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0689",
-    "title": "G.SKILL Trident Z5 RGB 16GB (2 x 8GB) DDR5 6000 CL30 Desktop Memory Kit",
-    "price": 342,
-    "was": 389.88,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0689.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0689",
-    "rating": 3.9,
-    "reviews": 1437,
     "prime": false,
     "bestSeller": false
    }
@@ -889,42 +745,6 @@
     "reviews": 1516,
     "prime": false,
     "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0809",
-    "title": "Kingston NV3 8TB PCIe Gen4 NVMe M.2 Internal SSD, up to 7450 MB/s",
-    "price": 600,
-    "was": 720,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0809.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0809",
-    "rating": 4.5,
-    "reviews": 1330,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0782",
-    "title": "Crucial T705 500GB PCIe Gen5 NVMe M.2 Internal SSD, up to 14900 MB/s",
-    "price": 58,
-    "was": 69.6,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0782.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0782",
-    "rating": 4.5,
-    "reviews": 212,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0805",
-    "title": "Crucial MX500 4TB 3D NAND SATA 2.5 Inch Internal SSD",
-    "price": 232,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0805.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0805",
-    "rating": 4.9,
-    "reviews": 103,
-    "prime": false,
-    "bestSeller": false
    }
   ],
   "gpu": [
@@ -1069,42 +889,6 @@
     "url": "https://www.amazon.com/dp/SAMPLE0204",
     "rating": 4.8,
     "reviews": 1790,
-    "prime": true,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0231",
-    "title": "ASUS TUF Gaming GeForce RTX 5050 8GB GDDR Graphics Card, 2-Slot, 230mm, PCIe 4.0",
-    "price": 249,
-    "was": 286.35,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0231.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0231",
-    "rating": 4.3,
-    "reviews": 1199,
-    "prime": true,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0232",
-    "title": "MSI Gaming X Slim GeForce RTX 5050 8GB GDDR Graphics Card, 2-Slot, 230mm, PCIe 4.0",
-    "price": 260,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0232.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0232",
-    "rating": 4.4,
-    "reviews": 893,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0210",
-    "title": "PNY VERTO GeForce RTX 5080 16GB GDDR Graphics Card, 3-Slot, 320mm, PCIe 4.0",
-    "price": 1179,
-    "was": null,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0210.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0210",
-    "rating": 4.7,
-    "reviews": 799,
     "prime": true,
     "bestSeller": false
    }
@@ -1253,42 +1037,6 @@
     "reviews": 1160,
     "prime": false,
     "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0839",
-    "title": "EVGA SuperNOVA 1200 G7 1200W 80+ Gold Fully Modular ATX 3.1 Power Supply, PCIe 5.1 12V-2x6",
-    "price": 187,
-    "was": 216.92,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0839.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0839",
-    "rating": 4.4,
-    "reviews": 977,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0830",
-    "title": "Seasonic FOCUS GX-850 850W 80+ Gold Fully Modular ATX 3.1 Power Supply, PCIe 5.1 12V-2x6",
-    "price": 140,
-    "was": 162.4,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0830.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0830",
-    "rating": 4.7,
-    "reviews": 318,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0842",
-    "title": "Thermaltake Smart 1200W 1200W 80+ Bronze Non-Modular ATX 3.1 Power Supply, PCIe 5.1 12V-2x6",
-    "price": 133,
-    "was": 154.28,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0842.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0842",
-    "rating": 4.7,
-    "reviews": 6,
-    "prime": false,
-    "bestSeller": false
    }
   ],
   "case": [
@@ -1435,42 +1183,6 @@
     "reviews": 1078,
     "prime": true,
     "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0855",
-    "title": "Fractal Design North White ATX Mid Tower PC Case, Tempered Glass, 355mm GPU clearance",
-    "price": 99,
-    "was": 113.85,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0855.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0855",
-    "rating": 4.6,
-    "reviews": 694,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0876",
-    "title": "Lian Li A4-H2O Black Mini ITX PC Case, Tempered Glass, 322mm GPU clearance",
-    "price": 119,
-    "was": 136.85,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0876.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0876",
-    "rating": 4.5,
-    "reviews": 671,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "SAMPLE0874",
-    "title": "NZXT H1 V2 Black Mini ITX PC Case, Tempered Glass, 324mm GPU clearance",
-    "price": 119,
-    "was": 136.85,
-    "image": "https://m.media-amazon.com/images/I/SAMPLE0874.jpg",
-    "url": "https://www.amazon.com/dp/SAMPLE0874",
-    "rating": 4.8,
-    "reviews": 453,
-    "prime": false,
-    "bestSeller": false
    }
   ],
   "monitor": [
@@ -1506,7 +1218,7 @@
     "image": "https://m.media-amazon.com/images/I/P2009monitor.jpg",
     "url": "https://www.amazon.com/dp/P2009monitor",
     "rating": 4.7,
-    "reviews": 4319,
+    "reviews": 5458,
     "prime": true,
     "bestSeller": false
    },
@@ -1542,7 +1254,7 @@
     "image": "https://m.media-amazon.com/images/I/P2014monitor.jpg",
     "url": "https://www.amazon.com/dp/P2014monitor",
     "rating": 4.6,
-    "reviews": 2182,
+    "reviews": 1600,
     "prime": false,
     "bestSeller": false
    },
@@ -1555,18 +1267,6 @@
     "url": "https://www.amazon.com/dp/SAMPLE0893",
     "rating": 4.9,
     "reviews": 1565,
-    "prime": true,
-    "bestSeller": false
-   },
-   {
-    "asin": "P2018monitor",
-    "title": "Gigabyte Gigabyte M32U 32\" 4K UHD 3840x2160 144Hz IPS Gaming Monitor, 1ms, HDR, FreeSync",
-    "price": 463,
-    "was": 523.19,
-    "image": "https://m.media-amazon.com/images/I/P2018monitor.jpg",
-    "url": "https://www.amazon.com/dp/P2018monitor",
-    "rating": 4.6,
-    "reviews": 770,
     "prime": true,
     "bestSeller": false
    },
@@ -1595,14 +1295,14 @@
     "bestSeller": false
    },
    {
-    "asin": "P2012monitor",
-    "title": "MSI ASUS TUF Gaming VG27AQ 27\" QHD 2560x1440 170Hz IPS Gaming Monitor, 1ms, HDR, FreeSync",
-    "price": 311,
-    "was": 351.43,
-    "image": "https://m.media-amazon.com/images/I/P2012monitor.jpg",
-    "url": "https://www.amazon.com/dp/P2012monitor",
+    "asin": "P2018monitor",
+    "title": "Gigabyte Gigabyte M32U 32\" 4K UHD 3840x2160 144Hz IPS Gaming Monitor, 1ms, HDR, FreeSync",
+    "price": 463,
+    "was": 523.19,
+    "image": "https://m.media-amazon.com/images/I/P2018monitor.jpg",
+    "url": "https://www.amazon.com/dp/P2018monitor",
     "rating": 4.2,
-    "reviews": 4250,
+    "reviews": 4381,
     "prime": true,
     "bestSeller": false
    },
@@ -1619,38 +1319,14 @@
     "bestSeller": false
    },
    {
-    "asin": "P2007monitor",
-    "title": "Cooler Master MSI MAG 274QRF 27\" QHD 2560x1440 180Hz IPS Gaming Monitor, 1ms, HDR, FreeSync",
+    "asin": "P2017monitor",
+    "title": "ASUS MSI MAG 274QRF 27\" QHD 2560x1440 180Hz IPS Gaming Monitor, 1ms, HDR, FreeSync",
     "price": 314,
     "was": 354.82,
-    "image": "https://m.media-amazon.com/images/I/P2007monitor.jpg",
-    "url": "https://www.amazon.com/dp/P2007monitor",
-    "rating": 3.7,
-    "reviews": 7387,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "P2008monitor",
-    "title": "MSI Gigabyte M32U 32\" 4K UHD 3840x2160 144Hz IPS Gaming Monitor, 1ms, HDR, FreeSync",
-    "price": 463,
-    "was": 523.19,
-    "image": "https://m.media-amazon.com/images/I/P2008monitor.jpg",
-    "url": "https://www.amazon.com/dp/P2008monitor",
-    "rating": 3.3,
-    "reviews": 6638,
-    "prime": false,
-    "bestSeller": false
-   },
-   {
-    "asin": "P2019monitor",
-    "title": "Cooler Master ViewSonic XG2405 24\" FHD 1920x1080 144Hz IPS Gaming Monitor, 1ms, HDR, FreeSync",
-    "price": 203,
-    "was": 229.39,
-    "image": "https://m.media-amazon.com/images/I/P2019monitor.jpg",
-    "url": "https://www.amazon.com/dp/P2019monitor",
-    "rating": 3.2,
-    "reviews": 5058,
+    "image": "https://m.media-amazon.com/images/I/P2017monitor.jpg",
+    "url": "https://www.amazon.com/dp/P2017monitor",
+    "rating": 3.9,
+    "reviews": 1714,
     "prime": false,
     "bestSeller": false
    }
