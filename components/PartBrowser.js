@@ -22,7 +22,11 @@ const SORTS = [
 
 const PAGE = 40;
 
-export default function PartBrowser({ cat, build, onPick, onClose, embedded, initialQ }) {
+// `initial` is the once-a-day snapshot handed down by getStaticProps in
+// pages/parts/[cat].js. When it's there we render from it and spend nothing.
+// When it isn't — the builder embeds this component without one — we fetch,
+// exactly as before.
+export default function PartBrowser({ cat, build, onPick, onClose, embedded, initialQ, initial }) {
   const meta = CATS[cat] || {};
   const cols = COLUMNS[cat] || [];
   const facets = FACETS[cat] || [];
@@ -32,8 +36,9 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
   // We never invent a search term on their behalf.
   const [q, setQ] = useState(initialQ || "");
   const [typed, setTyped] = useState(initialQ || "");
-  const [data, setData] = useState({ products: [], live: false, total: 0, more: false });
-  const [loading, setLoading] = useState(true);
+  const preseeded = Boolean(initial && !initialQ);
+  const [data, setData] = useState(preseeded ? initial : { products: [], live: false, total: 0, more: false });
+  const [loading, setLoading] = useState(!preseeded);
   const [loadingMore, setLoadingMore] = useState(false);
   const [tranche, setTranche] = useState(0);
   const [sel, setSel] = useState({});           // active filters
@@ -42,7 +47,8 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
   const [onlyFits, setOnlyFits] = useState(true);
   const [maxPrice, setMaxPrice] = useState("");
   const [minPrice, setMinPrice] = useState("");
-  const seen = useRef(new Set());
+  const seen = useRef(new Set(preseeded ? (initial.products || []).map((p) => p.asin) : []));
+  const consumed = useRef(null);   // which category's snapshot we've already used
 
   const load = useCallback(async (opts) => {
     const { t = 0, query = "", append = false } = opts || {};
@@ -66,8 +72,19 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
   useEffect(() => {
     const start = initialQ || "";
     setQ(start); setTyped(start); setSel({}); setShown(PAGE); setTranche(0);
+
+    // The page already arrived with today's snapshot inside it. Re-fetching it
+    // would cost real API requests to learn something we were just told.
+    if (initial && !start && consumed.current !== cat) {
+      consumed.current = cat;
+      seen.current = new Set((initial.products || []).map((p) => p.asin));
+      setData(initial);
+      setLoading(false);
+      return;
+    }
+
     load({ t: 0, query: start });
-  }, [cat, initialQ, load]);
+  }, [cat, initialQ, load, initial]);
 
   const submit = (e) => {
     e && e.preventDefault();
