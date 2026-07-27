@@ -166,7 +166,7 @@ h3{font-size:18px;margin:0 0 6px;font-weight:750}
 /* the spec table */
 .ptable{border-top:1px solid var(--line-2)}
 .phead,.prow{display:flex;align-items:center;gap:14px;padding:11px 8px;border-bottom:1px solid var(--line)}
-.phead{font-size:11.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--faint);padding:9px 8px;position:sticky;top:62px;background:var(--bg);z-index:5}
+.phead{font-size:11.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--faint);padding:9px 8px;background:var(--bg)}
 .prow:hover{background:var(--bg-2)}
 .prow.no{opacity:.5}
 .prow.warn{background:rgba(255,180,84,.05)}
