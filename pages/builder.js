@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import PartBrowser from "../components/PartBrowser";
 import PartnerStrip from "../components/PartnerStrip";
+import { ProductImage, ProductLink } from "../components/Product";
 import DiscordCTA from "../components/DiscordCTA";
 import { CATEGORIES, checkBuild, nextStep } from "../lib/compat";
 import { specLine } from "../lib/specs";
@@ -71,11 +72,11 @@ export default function Builder() {
 
                   {p ? (
                     <>
-                      <a className="bthumb" href={p.url} target="_blank" rel="nofollow sponsored noopener">
-                        <img src={p.image} alt="" loading="lazy" />
-                      </a>
+                      <ProductLink p={p} className="bthumb">
+                        <ProductImage p={p} />
+                      </ProductLink>
                       <div className="bmid">
-                        <a className="bname" href={p.url} target="_blank" rel="nofollow sponsored noopener">{p.title}</a>
+                        <ProductLink p={p} className="bname">{p.title}</ProductLink>
                         {line && <div className="bspec">{line}</div>}
                       </div>
                       <div className="bprice">{p.price != null ? "$" + p.price.toFixed(2) : "—"}</div>
