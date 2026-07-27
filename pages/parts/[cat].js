@@ -48,9 +48,19 @@ export default function PartsCategory({ cat, initial, builtAt, shelf, sample }) 
 
       {/* The same number in every category, on purpose — see the build script. */}
       <p className="muted" style={{ marginTop: 0, marginBottom: 16, fontSize: 14.5, maxWidth: 760 }}>
-        The {shelf} most-bought {meta.plural.toLowerCase()} on Amazon, ranked by how many people have
-        actually reviewed them. Every category on this site shows the same {shelf} — no aisle is
-        deeper than another.
+        {sample ? (
+          <>
+            {shelf} {meta.plural.toLowerCase()}, ranked most-reviewed first. Every category on this
+            site shows the same {shelf} — no aisle is deeper than another. Once the catalog has been
+            built from Amazon, these are the {shelf} most-bought.
+          </>
+        ) : (
+          <>
+            The {shelf} most-bought {meta.plural.toLowerCase()} on Amazon, ranked by how many people
+            have actually reviewed them. Every category on this site shows the same {shelf} — no
+            aisle is deeper than another.
+          </>
+        )}
       </p>
 
       <PriceStamp builtAt={builtAt} sample={sample} />
