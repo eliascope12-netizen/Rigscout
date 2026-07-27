@@ -3,11 +3,12 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
 import { CATS, CAT_ORDER } from "../lib/catalog";
-import { topDeals } from "../lib/deals";
+import PriceStamp from "../components/PriceStamp";
+import { topDealsStatic, catalogMeta } from "../lib/staticCatalog";
 
 const STEP = 32;
 
-export default function Products({ deals: snapshot }) {
+export default function Products({ deals: snapshot, builtAt, shelf, total, sample }) {
   const router = useRouter();
   const [q, setQ] = useState("");              // starts empty — always
   const [typed, setTyped] = useState("");
@@ -50,10 +51,13 @@ export default function Products({ deals: snapshot }) {
 
   return (
     <div className="wrap page">
-      <span className="eyebrow">Deals &amp; live search</span>
-      <h1>Search Amazon, live</h1>
+      <span className="eyebrow">Deals &amp; search</span>
+      <h1>Search the catalog</h1>
       <p className="lead" style={{ marginBottom: 24 }}>
-        Type anything — a model number, a brand, a budget part. Prices and photos come straight from Amazon, right now.
+        Type a model number, a brand, a capacity — “RTX 5070”, “7800X3D”, “850W”, “2TB”. You are
+        searching {total ? total.toLocaleString() : "a few hundred"}{" "}
+        {sample ? "example listings" : "real Amazon listings"}: the {shelf} most-bought products in
+        each of the nine categories, not all of Amazon.
       </p>
 
       <form className="searchbar" onSubmit={(e) => { e.preventDefault(); run(typed); }}>
@@ -61,12 +65,7 @@ export default function Products({ deals: snapshot }) {
         <button className="btn" type="submit">Search</button>
       </form>
 
-      <div className="badge-live">
-        <span className={"dot " + ((q ? data.live : deals.live) ? "on" : "off")} />
-        {(q ? data.live : deals.live)
-          ? "Live prices from Amazon"
-          : "Sample catalog — add your RapidAPI key to switch on live prices (see README)"}
-      </div>
+      <PriceStamp builtAt={builtAt} count={total} sample={sample} />
 
       {q ? (
         <>
@@ -80,7 +79,7 @@ export default function Products({ deals: snapshot }) {
             </select>
           </div>
 
-          {loading ? <p className="muted">Searching Amazon for “{q}”…</p> : (
+          {loading ? <p className="muted">Searching for “{q}”…</p> : (
             sorted.length ? (
               <>
                 <div className="prodgrid">{sorted.slice(0, shown).map((p, i) => <ProductCard key={p.asin + i} p={p} />)}</div>
@@ -88,7 +87,19 @@ export default function Products({ deals: snapshot }) {
                   <div className="bx-more"><button className="btn ghost" onClick={() => setShown((s) => s + STEP)}>Show more ({sorted.length - shown} left)</button></div>
                 )}
               </>
-            ) : <p className="muted">Nothing came back for that. Try a model number — “RTX 5070 Ti”, “7800X3D”, “850W”.</p>
+            ) : (
+              <div className="muted">
+                <p style={{ marginBottom: 6 }}>Nothing on the shelf matches “{q}”.</p>
+                <p style={{ marginTop: 0, fontSize: 14.5 }}>
+                  This searches the {total ? total.toLocaleString() : ""} products in our catalog, not the whole
+                  of Amazon — so a part can be perfectly real and still not be here. Try a broader
+                  term (“RTX 5070” rather than a specific board partner), or{" "}
+                  <a className="ilink" href={"https://www.amazon.com/s?k=" + encodeURIComponent(q)} target="_blank" rel="noopener noreferrer nofollow">
+                    search Amazon directly for “{q}”
+                  </a>.
+                </p>
+              </div>
+            )
           )}
 
           <p className="faint" style={{ marginTop: 34, fontSize: 13.5 }}>
@@ -106,27 +117,36 @@ export default function Products({ deals: snapshot }) {
             {CAT_ORDER.map((k) => <Link key={k} href={`/parts/${k}`} className="cattab">{CATS[k].plural}</Link>)}
           </div>
 
-          <h2 style={{ marginTop: 44 }}>Biggest price drops right now</h2>
+          <h2 style={{ marginTop: 44 }}>Price drops</h2>
           <p className="muted" style={{ marginTop: 0, marginBottom: 20, fontSize: 15 }}>
-            Live discounts on the parts people buy most — refreshed automatically.
+            Parts Amazon was listing below their usual price when we last checked. No countdowns, no
+            “only 2 left” — just the gap between the two numbers Amazon showed.
           </p>
           {deals.products.length ? (
             <div className="prodgrid">{deals.products.map((p, i) => <ProductCard key={p.asin + i} p={p} />)}</div>
-          ) : <p className="muted">Loading today&apos;s deals…</p>}
+          ) : (
+            <p className="muted">
+              Nothing on the shelf was meaningfully discounted when the catalog was last built. Rather
+              than pad this out with two-percent “deals”, it stays empty.
+            </p>
+          )}
         </>
       )}
     </div>
   );
 }
 
-// The deals rail, built once a day and shared by every visitor. The live
-// search box below it is the only thing on this page that costs a request,
-// and it only costs one when somebody actually types something.
+// Everything on this page — the rail and the search box — reads the catalog
+// that shipped with the site. No API key, no requests, nothing to run dry.
 export async function getStaticProps() {
-  try {
-    const deals = await topDeals();
-    return { props: { deals }, revalidate: 86400 };
-  } catch (e) {
-    return { props: { deals: null }, revalidate: 3600 };
-  }
+  const meta = catalogMeta();
+  return {
+    props: {
+      deals: topDealsStatic(24),
+      builtAt: meta.builtAt,
+      shelf: meta.shelf,
+      total: meta.total,
+      sample: meta.sample,
+    },
+  };
 }

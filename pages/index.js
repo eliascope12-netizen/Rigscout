@@ -3,7 +3,8 @@ import Link from "next/link";
 import ProductCard from "../components/ProductCard";
 import DiscordCTA from "../components/DiscordCTA";
 import { CATS, CAT_ORDER } from "../lib/catalog";
-import { topDeals } from "../lib/deals";
+import PriceStamp from "../components/PriceStamp";
+import { topDealsStatic, catalogMeta } from "../lib/staticCatalog";
 
 const POPULAR = [
   { q: "RTX 5070", cat: "gpu" },
@@ -18,7 +19,7 @@ const POPULAR = [
   { q: "1440p 180Hz", cat: "monitor" },
 ];
 
-export default function Home({ deals: snapshot }) {
+export default function Home({ deals: snapshot, builtAt, shelf, total, sample }) {
   // The deals rail arrives with the page, from a snapshot regenerated once a
   // day (see getStaticProps at the bottom). Only fall back to fetching it in
   // the browser if that snapshot somehow didn't come through.
@@ -36,20 +37,20 @@ export default function Home({ deals: snapshot }) {
       {/* ================= HERO ================= */}
       <section className="hero">
         <div className="wrap">
-          <span className="eyebrow">Live-priced PC platform</span>
+          <span className="eyebrow">Real-priced PC platform</span>
           <h1>Stop guessing.<br />Start upgrading.</h1>
           <p className="lead">
             RigScout works out exactly which part is holding your frame rate back, plans a build where every
-            component is checked against every other one, and pulls live prices and real photos straight from
-            Amazon — so what you see is what you pay.
+            component is checked against every other one, and prices it against real Amazon listings —
+            every one of them checked by hand, dated on the page, and linked straight to the product.
           </p>
           <div className="btns">
             <Link href="/upgrade" className="btn">Analyze my build →</Link>
             <Link href="/parts" className="btn ghost">Browse every part</Link>
           </div>
           <div className="trust">
-            <span>✓ Live Amazon prices</span>
-            <span>✓ Real product photos</span>
+            <span>✓ Real Amazon listings, dated</span>
+            <span>✓ Equal depth in every category</span>
             <span>✓ Compatibility checked for you</span>
             <span>✓ Always free</span>
           </div>
@@ -81,8 +82,9 @@ export default function Home({ deals: snapshot }) {
             <div className="k">Buy</div>
             <h3>Straight to the right product</h3>
             <p>
-              Every row is a real Amazon listing with the current price, rating and photo, and every link opens
-              the exact product page. No stale prices, no guessing which variant is which.
+              Every row is a real Amazon listing with its price, rating and photo from the day we checked, and
+              every link opens that exact product page — never a search results page, never a guess at which
+              variant you meant.
             </p>
             <Link href="/products" className="ilink">See today&apos;s deals →</Link>
           </div>
@@ -122,15 +124,21 @@ export default function Home({ deals: snapshot }) {
         <section className="home-sec">
           <div className="sec-head">
             <div>
-              <h2>Biggest price drops right now</h2>
-              <p className="usub">Live discounts on the parts people actually buy — refreshed automatically.</p>
+              <h2>Price drops</h2>
+              <p className="usub">
+                Parts Amazon was listing below their usual price when we last checked the catalog.
+              </p>
             </div>
             <Link href="/products" className="ilink">See all deals →</Link>
           </div>
+          <div style={{ marginBottom: 16 }}><PriceStamp builtAt={builtAt} count={total} sample={sample} /></div>
           {top.length ? (
             <div className="prodgrid">{top.map((p, i) => <ProductCard key={p.asin + i} p={p} />)}</div>
           ) : (
-            <div className="prodgrid">{Array.from({ length: 4 }).map((_, i) => <div className="skel tall" key={i} />)}</div>
+            <p className="muted">
+              Nothing on the shelf was meaningfully discounted when the catalog was last built. We
+              would rather show you an empty row than dress up a two-percent price change as a deal.
+            </p>
           )}
         </section>
 
@@ -138,8 +146,11 @@ export default function Home({ deals: snapshot }) {
         <section className="home-sec">
           <div className="sec-head">
             <div>
-              <h2>Browse the whole catalog</h2>
-              <p className="usub">Filters down the side, real specifications on every row — sockets, wattage, clearances, capacities.</p>
+              <h2>Browse the catalog</h2>
+              <p className="usub">
+                The {shelf} most-bought products in every category — the same {shelf} in each, so no aisle looks
+                emptier than another. Filters down the side, real specifications on every row.
+              </p>
             </div>
             <Link href="/parts" className="ilink">All categories →</Link>
           </div>
@@ -178,10 +189,12 @@ export default function Home({ deals: snapshot }) {
               </p>
             </div>
             <div>
-              <h3>Prices come from Amazon, not from us</h3>
+              <h3>Real prices, and we date them</h3>
               <p>
-                Every price, photo, rating and review count on this site is pulled live. Nothing is typed in by hand,
-                so nothing goes stale — and every link opens the exact product page rather than a search results page.
+                Every price, photo, rating and review count here came from an actual Amazon listing, and every buy
+                link opens that exact product. What we will not do is call them live when they are not: the catalog
+                is rebuilt by hand every week or so, and the date it was last checked is printed on every page that
+                shows a price. Check it against Amazon before you buy — the link is right there.
               </p>
             </div>
             <div>
@@ -231,11 +244,18 @@ export default function Home({ deals: snapshot }) {
 // The deals rail costs twelve API requests to build. Building it once a day
 // and letting every visitor read the result is the difference between a fixed
 // monthly bill and one that grows with traffic.
+// Nothing here calls Amazon. The rail is derived from the catalog file that
+// ships with the site, so the home page costs nothing to serve and renders
+// identically on the first day of the month and the last.
 export async function getStaticProps() {
-  try {
-    const deals = await topDeals();
-    return { props: { deals }, revalidate: 86400 };
-  } catch (e) {
-    return { props: { deals: null }, revalidate: 3600 };
-  }
+  const meta = catalogMeta();
+  return {
+    props: {
+      deals: topDealsStatic(8),
+      builtAt: meta.builtAt,
+      shelf: meta.shelf,
+      total: meta.total,
+      sample: meta.sample,
+    },
+  };
 }
