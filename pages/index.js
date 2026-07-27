@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
+import DiscordCTA from "../components/DiscordCTA";
 import { CATS, CAT_ORDER } from "../lib/catalog";
 
 const POPULAR = [
@@ -185,6 +186,26 @@ export default function Home() {
                 we say that too. Advice that only ever says &ldquo;buy more&rdquo; isn&apos;t advice.
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* ================= DISCORD ================= */}
+        <section className="home-sec">
+          <DiscordCTA />
+        </section>
+
+        {/* ================= BEYOND THE BUILD ================= */}
+        <section className="home-sec">
+          <div className="sec-head">
+            <div>
+              <h2>Beyond the build</h2>
+              <p className="usub">
+                The three services people ask us about once the machine boots — backup, game
+                hosting, VPNs — written up with the case for <em>not</em> buying each one. One of
+                them is on the list mainly so we can tell you what it won&apos;t do.
+              </p>
+            </div>
+            <Link href="/extras" className="ilink">Read the rundown →</Link>
           </div>
         </section>
 

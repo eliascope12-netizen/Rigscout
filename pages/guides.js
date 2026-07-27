@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Link from "next/link";
+import DiscordCTA from "../components/DiscordCTA";
 
 const GUIDES = [
   { label: "Graphics card (GPU)", terms: "gpu graphics card rtx radeon", video: "GoX-6rGZPiI" },
@@ -50,6 +52,15 @@ export default function Guides() {
           </div>
         )}
       </div>
+
+      <section className="home-sec">
+        <DiscordCTA />
+      </section>
+
+      <p className="faint" style={{ fontSize: 13, maxWidth: 720 }}>
+        Machine already assembled and booting? <Link href="/extras" className="ilink">Beyond the Build</Link>{" "}
+        covers the handful of services worth paying for afterwards — and who should skip each one.
+      </p>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import PartBrowser from "../components/PartBrowser";
+import PartnerStrip from "../components/PartnerStrip";
+import DiscordCTA from "../components/DiscordCTA";
 import { CATEGORIES, checkBuild, nextStep } from "../lib/compat";
 import { specLine } from "../lib/specs";
 import { CATS } from "../lib/catalog";
@@ -170,6 +172,11 @@ export default function Builder() {
               ))}
             </div>
           )}
+
+          {/* Once there's something real in the list, offer the second opinion —
+              and only after that, the things that aren't parts. */}
+          {chosen > 1 && <DiscordCTA variant="box" />}
+          {report.complete && !report.failures.length && <PartnerStrip />}
         </aside>
       </div>
 
