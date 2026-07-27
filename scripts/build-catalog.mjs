@@ -259,13 +259,58 @@ function absorb(byAsin, rows) {
   }
 }
 
-// Drop anything that is not actually this kind of part, then rank. isRelevant
-// is the same filter the live site used — accessories, cables, sag brackets
-// and "compatible with" listings do not belong on a parts shelf.
+// ---------------------------------------------------------------------------
+// THE SAME PRODUCT, TWICE
+// ---------------------------------------------------------------------------
+// Deduplicating by ASIN is not enough. Amazon issues separate identifiers to a
+// bundle, to a seller-specific listing, and sometimes to the identical card
+// sold through a different storefront — so three of "the twenty-two most
+// popular graphics cards" can turn out to be one graphics card wearing three
+// hats. That quietly breaks the promise the shelf is making, and it looks
+// careless besides.
+//
+// The test below is deliberately narrow, because a wrong merge is worse than a
+// missed one: dropping the Ti because the non-Ti was already kept would be a
+// real error a customer could act on, while leaving one genuine duplicate is
+// merely untidy. So two rows count as the same product only when their
+// normalised titles are identical, or when one is exactly the tail of the other
+// — the "MSI Thermalright Peerless Assassin 120" against "Thermalright Peerless
+// Assassin 120" case, a storefront name glued on the front.
+//
+// Variants differ at the END of a title, not the front: "RTX 5070" is not a
+// tail of "RTX 5070 Ti", and "16GB DDR5" is not a tail of "32GB DDR5". Both
+// survive, which is the behaviour we want.
+//
+// Rows arrive here already in rank order, so the copy that survives a merge is
+// the most popular one.
+// ---------------------------------------------------------------------------
+function normTitle(t) {
+  return String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function dedupeVariants(ranked) {
+  const kept = [];
+  const seen = [];
+  for (const p of ranked) {
+    const n = normTitle(p.title);
+    if (!n) continue;
+    if (seen.some((k) => k === n || k.endsWith(" " + n) || n.endsWith(" " + k))) continue;
+    kept.push(p);
+    seen.push(n);
+  }
+  return kept;
+}
+
+// Drop anything that is not actually this kind of part, then rank, then collapse
+// the same product appearing under more than one listing. isRelevant is the same
+// filter the live site used — accessories, cables, sag brackets and "compatible
+// with" listings do not belong on a parts shelf.
 function usable(cat, byAsin) {
-  return [...byAsin.values()]
-    .filter((p) => isRelevant(cat, p.title, readSpecs(cat, p.title)))
-    .sort(rank);
+  return dedupeVariants(
+    [...byAsin.values()]
+      .filter((p) => isRelevant(cat, p.title, readSpecs(cat, p.title)))
+      .sort(rank)
+  );
 }
 
 // ---------------------------------------------------------------------------
