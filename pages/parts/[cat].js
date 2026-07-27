@@ -1,28 +1,31 @@
 // ============================================================================
 // /parts/[cat] — the category browser
 // ----------------------------------------------------------------------------
-// This page is the reason the API bill stays flat.
+// Nine categories, all nine built into plain HTML when the site is deployed,
+// every one of them exactly the same size.
 //
-// The first tranche of every category is rendered as a STATIC SNAPSHOT and
-// regenerated at most once a day (see revalidate below). The host stores that
-// snapshot durably and serves it to everyone, so ten visitors and ten thousand
-// visitors cost exactly the same: fourteen API requests per category per day.
+// This page used to regenerate itself once a day against the live Amazon API,
+// which was the cheap way to do it while there was a paid plan behind it. On
+// the free plan it is not cheap enough — a hundred requests a month does not
+// survive nine categories refreshing daily, and a category page that returns
+// nothing because the quota ran out on the 20th is worse than one showing a
+// price from the 12th.
 //
-// Only the things a person actively asks for — "show me more", or a search
-// they typed — go to /api/catalog at request time.
+// So there is no revalidate here and no API call. The products come from
+// data/catalog.json, which ships with the site. Serving this page costs
+// nothing, cannot fail, and looks identical on the last day of the month.
 //
-// fallback:"blocking" with an empty paths list is deliberate: a category is
-// built the first time someone actually opens it, not on every deploy. A push
-// that changes the CSS shouldn't cost API requests.
+// The date the prices were checked is shown on the page. See PriceStamp.
 // ============================================================================
 
 import { useRouter } from "next/router";
 import Link from "next/link";
 import PartBrowser from "../../components/PartBrowser";
+import PriceStamp from "../../components/PriceStamp";
 import { CATS, CAT_ORDER } from "../../lib/catalog";
-import { browseCategory } from "../../lib/amazon";
+import { browseCategoryStatic, catalogMeta } from "../../lib/staticCatalog";
 
-export default function PartsCategory({ cat, initial }) {
+export default function PartsCategory({ cat, initial, builtAt, shelf, sample }) {
   const router = useRouter();
   const initialQ = router.query.q ? String(router.query.q) : "";
   const meta = CATS[cat];
@@ -41,8 +44,18 @@ export default function PartsCategory({ cat, initial }) {
     <div className="widewrap page">
       <span className="eyebrow">Browse parts</span>
       <h1 style={{ fontSize: 34, marginBottom: 8 }}>{meta.plural}</h1>
-      <p className="lead" style={{ marginBottom: 18, maxWidth: 760 }}>{meta.blurb}</p>
-      <div className="cattabs">
+      <p className="lead" style={{ marginBottom: 14, maxWidth: 760 }}>{meta.blurb}</p>
+
+      {/* The same number in every category, on purpose — see the build script. */}
+      <p className="muted" style={{ marginTop: 0, marginBottom: 16, fontSize: 14.5, maxWidth: 760 }}>
+        The {shelf} most-bought {meta.plural.toLowerCase()} on Amazon, ranked by how many people have
+        actually reviewed them. Every category on this site shows the same {shelf} — no aisle is
+        deeper than another.
+      </p>
+
+      <PriceStamp builtAt={builtAt} sample={sample} />
+
+      <div className="cattabs" style={{ marginTop: 16 }}>
         {CAT_ORDER.map((k) => (
           <Link key={k} href={`/parts/${k}`} className={"cattab" + (k === cat ? " on" : "")}>{CATS[k].plural}</Link>
         ))}
@@ -52,25 +65,23 @@ export default function PartsCategory({ cat, initial }) {
   );
 }
 
+// All nine, built at deploy time. The data is a file in the repository, so
+// there is no reason to defer any of them and no cost to doing them all.
 export async function getStaticPaths() {
-  return { paths: [], fallback: "blocking" };
+  return { paths: CAT_ORDER.map((cat) => ({ params: { cat } })), fallback: false };
 }
 
 export async function getStaticProps({ params }) {
   const cat = String(params.cat || "");
   if (!CATS[cat]) return { notFound: true };
 
-  let initial = null;
-  try {
-    initial = await browseCategory(cat, { tranche: 0 });
-  } catch (e) {
-    // A failed snapshot must never take the page down. PartBrowser falls back
-    // to fetching client-side, exactly as it did before this change.
-    initial = null;
-  }
-
   return {
-    props: { cat, initial },
-    revalidate: 86400, // once a day is as often as prices meaningfully move
+    props: {
+      cat,
+      initial: browseCategoryStatic(cat),
+      builtAt: catalogMeta().builtAt,
+      shelf: catalogMeta().shelf,
+      sample: catalogMeta().sample,
+    },
   };
 }
