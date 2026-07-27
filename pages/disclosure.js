@@ -64,8 +64,9 @@ export default function Disclosure() {
           </li>
           <li>
             No manufactured urgency. No countdown timers, no invented stock levels, no
-            &ldquo;fourteen people are looking at this&rdquo;. If something is genuinely discounted
-            it&apos;s because Amazon&apos;s live price says so.
+            &ldquo;fourteen people are looking at this&rdquo;. If something is marked as discounted,
+            that is the gap between the two numbers Amazon itself showed when the catalog was last
+            built — and the date it was built is printed on every page that shows a price.
           </li>
         </ul>
 

@@ -287,7 +287,7 @@ export default function Upgrade() {
           {/* ---- what your money buys ---- */}
           <h2 className="usec">What your money actually buys</h2>
           <p className="usub">
-            Real parts at real prices, with your frame rate recalculated as if each one were already fitted.
+            Real parts at typical street prices, with your frame rate recalculated as if each one were already fitted.
             Nothing here is a guess about “up to” performance — it&apos;s the same model that produced the numbers above.
           </p>
 

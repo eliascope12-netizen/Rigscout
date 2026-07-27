@@ -37,19 +37,29 @@ export default function Home({ deals: snapshot, builtAt, shelf, total, sample })
       {/* ================= HERO ================= */}
       <section className="hero">
         <div className="wrap">
-          <span className="eyebrow">Real-priced PC platform</span>
+          <span className="eyebrow">{sample ? "PC upgrade advisor" : "Real-priced PC platform"}</span>
           <h1>Stop guessing.<br />Start upgrading.</h1>
           <p className="lead">
             RigScout works out exactly which part is holding your frame rate back, plans a build where every
-            component is checked against every other one, and prices it against real Amazon listings —
-            every one of them checked by hand, dated on the page, and linked straight to the product.
+            component is checked against every other one, and prices it{" "}
+            {sample ? (
+              <>
+                against Amazon listings. The catalog is currently example data — placeholder prices
+                that are here so the layout can be checked — so nothing below is a real listing yet.
+              </>
+            ) : (
+              <>
+                against real Amazon listings — every one of them dated on the page, and linked
+                straight to the product.
+              </>
+            )}
           </p>
           <div className="btns">
             <Link href="/upgrade" className="btn">Analyze my build →</Link>
             <Link href="/parts" className="btn ghost">Browse every part</Link>
           </div>
           <div className="trust">
-            <span>✓ Real Amazon listings, dated</span>
+            <span>{sample ? "Example prices until the first catalog build" : "✓ Real Amazon listings, dated"}</span>
             <span>✓ Equal depth in every category</span>
             <span>✓ Compatibility checked for you</span>
             <span>✓ Always free</span>
@@ -82,9 +92,9 @@ export default function Home({ deals: snapshot, builtAt, shelf, total, sample })
             <div className="k">Buy</div>
             <h3>Straight to the right product</h3>
             <p>
-              Every row is a real Amazon listing with its price, rating and photo from the day we checked, and
-              every link opens that exact product page — never a search results page, never a guess at which
-              variant you meant.
+              {sample
+                ? "Every row is laid out the way the real thing will be — price, rating and photo, with the link going straight to that one product. The catalog behind it is example data for now, so the buy links won't reach a product until the first price build runs."
+                : "Every row is a real Amazon listing with its price, rating and photo from the day we checked, and every link opens that exact product page — never a search results page, never a guess at which variant you meant."}
             </p>
             <Link href="/products" className="ilink">See today&apos;s deals →</Link>
           </div>
@@ -126,7 +136,9 @@ export default function Home({ deals: snapshot, builtAt, shelf, total, sample })
             <div>
               <h2>Price drops</h2>
               <p className="usub">
-                Parts Amazon was listing below their usual price when we last checked the catalog.
+                {sample
+                  ? "Once the catalog has been built from Amazon, this row shows the parts listed below their usual price. Right now it is example data."
+                  : "Parts Amazon was listing below their usual price when we last checked the catalog."}
               </p>
             </div>
             <Link href="/products" className="ilink">See all deals →</Link>
@@ -148,8 +160,9 @@ export default function Home({ deals: snapshot, builtAt, shelf, total, sample })
             <div>
               <h2>Browse the catalog</h2>
               <p className="usub">
-                The {shelf} most-bought products in every category — the same {shelf} in each, so no aisle looks
-                emptier than another. Filters down the side, real specifications on every row.
+                {sample
+                  ? `The same ${shelf} products in every category, so no aisle looks emptier than another. Once the catalog is built from Amazon these are the ${shelf} most-bought in each. Filters down the side, real specifications on every row.`
+                  : `The ${shelf} most-bought products in every category — the same ${shelf} in each, so no aisle looks emptier than another. Filters down the side, real specifications on every row.`}
               </p>
             </div>
             <Link href="/parts" className="ilink">All categories →</Link>
@@ -189,12 +202,11 @@ export default function Home({ deals: snapshot, builtAt, shelf, total, sample })
               </p>
             </div>
             <div>
-              <h3>Real prices, and we date them</h3>
+              <h3>{sample ? "We won't call these prices real yet" : "Real prices, and we date them"}</h3>
               <p>
-                Every price, photo, rating and review count here came from an actual Amazon listing, and every buy
-                link opens that exact product. What we will not do is call them live when they are not: the catalog
-                is rebuilt by hand every week or so, and the date it was last checked is printed on every page that
-                shows a price. Check it against Amazon before you buy — the link is right there.
+                {sample
+                  ? "The catalog is example data at the moment: placeholder prices that exist so the layout can be checked. Every price badge on the site says so, on its own, because the code checks whether the listings are real Amazon products rather than taking our word for it. Once the catalog has been built, every price, photo, rating and review count comes from an actual Amazon listing, every buy link opens that exact product, and the date it was checked is printed on every page that shows a price."
+                  : "Every price, photo, rating and review count here came from an actual Amazon listing, and every buy link opens that exact product. What we will not do is call them live when they are not: the catalog is rebuilt twice a month, and the date it was last checked is printed on every page that shows a price. Check it against Amazon before you buy — the link is right there."}
               </p>
             </div>
             <div>
