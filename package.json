@@ -2,11 +2,12 @@
   "name": "rigscout",
   "version": "1.0.0",
   "private": true,
-  "description": "RigScout — analyze, build and upgrade your PC, with live Amazon pricing.",
+  "description": "RigScout — analyze, build and upgrade your PC, priced against real Amazon listings.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "catalog": "node scripts/build-catalog.mjs"
   },
   "dependencies": {
     "next": "^14.2.35",
