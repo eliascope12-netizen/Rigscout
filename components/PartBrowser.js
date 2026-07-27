@@ -10,6 +10,7 @@
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import PriceStamp from "./PriceStamp";
 import { CATS, COLUMNS, FACETS } from "../lib/catalog";
 import { fits } from "../lib/compat";
 
@@ -92,7 +93,9 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
     load({ t: 0, query: typed });
   };
 
-  const more = () => { const t = tranche + 1; setTranche(t); load({ t, query: q, append: true }); };
+  // There used to be a `more()` here that fetched the next tranche from
+  // Amazon. It is gone on purpose: the shelf now ships with the site and is
+  // the same size in every category, so there is no deeper page to ask for.
 
   // ---- facet values, counted -------------------------------------------
   const facetValues = useMemo(() => {
@@ -225,7 +228,9 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
               {build && !onlyFits && (
                 <span className="fitnote"> · <button className="linkbtn" onClick={() => setOnlyFits(true)}>only show parts that fit</button></span>
               )}
-              {!data.live && !loading && <span className="fitnote"> · sample catalog</span>}
+              {!loading && (data.builtAt || data.sample) && (
+                <span className="fitnote"> · <PriceStamp builtAt={data.builtAt} sample={data.sample} compact /></span>
+              )}
             </>
           )}
         </div>
@@ -285,12 +290,17 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
         {!loading && rows.length > shown && (
           <div className="bx-more"><button className="btn ghost" onClick={() => setShown((s) => s + PAGE)}>Show more ({(rows.length - shown).toLocaleString()} left)</button></div>
         )}
-        {!loading && rows.length <= shown && data.more && (
+        {/* There is no "load more from Amazon" any more, and its absence is the
+            design rather than a missing feature. Every category holds the same
+            number of products — the most-bought ones — so a deeper button here
+            would make one aisle bigger than the rest, which is precisely what
+            this rebuild set out to stop. */}
+        {!loading && rows.length > 0 && rows.length <= shown && !q && (
           <div className="bx-more">
-            <button className="btn ghost" disabled={loadingMore} onClick={more}>
-              {loadingMore ? "Pulling more from Amazon…" : "Load more from Amazon"}
-            </button>
-            <div className="faint" style={{ fontSize: 12.5, marginTop: 8 }}>Searches deeper across the catalog — model by model, brand by brand.</div>
+            <div className="faint" style={{ fontSize: 12.5 }}>
+              That is the whole shelf — the {rows.length} most-bought {(meta.plural || "parts").toLowerCase()} on
+              Amazon. Every category here holds the same number, so none looks better stocked than another.
+            </div>
           </div>
         )}
       </div>
