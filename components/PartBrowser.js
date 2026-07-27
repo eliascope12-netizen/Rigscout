@@ -298,8 +298,11 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
         {!loading && rows.length > 0 && rows.length <= shown && !q && (
           <div className="bx-more">
             <div className="faint" style={{ fontSize: 12.5 }}>
-              That is the whole shelf — the {rows.length} most-bought {(meta.plural || "parts").toLowerCase()} on
-              Amazon. Every category here holds the same number, so none looks better stocked than another.
+              {/* Deliberately doesn't say "on Amazon" — this component renders over
+                  placeholder data too, and the badge above is the only thing that
+                  knows which. Describing the ordering is true either way. */}
+              That is the whole shelf — all {rows.length} {(meta.plural || "parts").toLowerCase()}, most-reviewed
+              first. Every category here holds the same number, so none looks better stocked than another.
             </div>
           </div>
         )}
