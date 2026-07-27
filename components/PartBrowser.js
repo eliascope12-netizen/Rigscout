@@ -11,6 +11,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import PriceStamp from "./PriceStamp";
+import { BuyButton, ProductImage, ProductLink } from "./Product";
 import { CATS, COLUMNS, FACETS } from "../lib/catalog";
 import { fits } from "../lib/compat";
 
@@ -249,11 +250,11 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
             const bad = p.fit && !p.fit.ok;
             return (
               <div className={"prow" + (bad ? (p.fit.hard ? " no" : " warn") : "")} key={p.asin}>
-                <a className="c-img" href={p.url} target="_blank" rel="nofollow sponsored noopener">
-                  <img src={p.image} alt="" loading="lazy" />
-                </a>
+                <ProductLink p={p} className="c-img">
+                  <ProductImage p={p} />
+                </ProductLink>
                 <div className="c-name">
-                  <a href={p.url} target="_blank" rel="nofollow sponsored noopener" className="pname">{p.title}</a>
+                  <ProductLink p={p} className="pname">{p.title}</ProductLink>
                   <div className="psub">
                     {p.prime && <span className="tag prime">Prime</span>}
                     {p.bestSeller && <span className="tag best">Best seller</span>}
@@ -272,7 +273,7 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
                 <span className="c-act">
                   {onPick
                     ? <button className="btn sm" onClick={() => onPick(p)}>Add</button>
-                    : <a className="btn sm amazon" href={p.url} target="_blank" rel="nofollow sponsored noopener">Buy</a>}
+                    : <BuyButton p={p} />}
                 </span>
               </div>
             );
