@@ -3,6 +3,7 @@ import Link from "next/link";
 import ProductCard from "../components/ProductCard";
 import DiscordCTA from "../components/DiscordCTA";
 import { CATS, CAT_ORDER } from "../lib/catalog";
+import { topDeals } from "../lib/deals";
 
 const POPULAR = [
   { q: "RTX 5070", cat: "gpu" },
@@ -17,14 +18,18 @@ const POPULAR = [
   { q: "1440p 180Hz", cat: "monitor" },
 ];
 
-export default function Home() {
-  const [deals, setDeals] = useState({ products: [], live: false });
+export default function Home({ deals: snapshot }) {
+  // The deals rail arrives with the page, from a snapshot regenerated once a
+  // day (see getStaticProps at the bottom). Only fall back to fetching it in
+  // the browser if that snapshot somehow didn't come through.
+  const [deals, setDeals] = useState(snapshot || { products: [], live: false });
 
   useEffect(() => {
+    if (snapshot) return;
     fetch("/api/deals").then((r) => r.json()).then(setDeals).catch(() => {});
-  }, []);
+  }, [snapshot]);
 
-  const top = deals.products.slice(0, 8);
+  const top = (deals.products || []).slice(0, 8);
 
   return (
     <>
@@ -221,4 +226,16 @@ export default function Home() {
       </div>
     </>
   );
+}
+
+// The deals rail costs twelve API requests to build. Building it once a day
+// and letting every visitor read the result is the difference between a fixed
+// monthly bill and one that grows with traffic.
+export async function getStaticProps() {
+  try {
+    const deals = await topDeals();
+    return { props: { deals }, revalidate: 86400 };
+  } catch (e) {
+    return { props: { deals: null }, revalidate: 3600 };
+  }
 }

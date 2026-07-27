@@ -3,15 +3,16 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
 import { CATS, CAT_ORDER } from "../lib/catalog";
+import { topDeals } from "../lib/deals";
 
 const STEP = 32;
 
-export default function Products() {
+export default function Products({ deals: snapshot }) {
   const router = useRouter();
   const [q, setQ] = useState("");              // starts empty — always
   const [typed, setTyped] = useState("");
   const [data, setData] = useState({ products: [], live: false });
-  const [deals, setDeals] = useState({ products: [], live: false });
+  const [deals, setDeals] = useState(snapshot || { products: [], live: false });
   const [loading, setLoading] = useState(false);
   const [shown, setShown] = useState(STEP);
   const [sort, setSort] = useState("relevance");
@@ -20,7 +21,7 @@ export default function Products() {
     if (!query || !query.trim()) { setData({ products: [], live: false }); setQ(""); return; }
     setLoading(true); setQ(query); setShown(STEP);
     try {
-      const r = await fetch("/api/amazon?q=" + encodeURIComponent(query) + "&pages=5");
+      const r = await fetch("/api/amazon?q=" + encodeURIComponent(query) + "&pages=3");
       setData(await r.json());
     } catch (e) { setData({ products: [], live: false, error: String(e) }); }
     setLoading(false);
@@ -34,9 +35,11 @@ export default function Products() {
     if (initial) { setTyped(initial); run(initial); }
   }, [router.isReady, router.query.q, run]);
 
+  // Same once-a-day snapshot the home page uses. Only fetch if it's missing.
   useEffect(() => {
+    if (snapshot) return;
     fetch("/api/deals").then((r) => r.json()).then(setDeals).catch(() => {});
-  }, []);
+  }, [snapshot]);
 
   const sorted = [...data.products].sort(
     sort === "price" ? (a, b) => (a.price ?? 1e9) - (b.price ?? 1e9)
@@ -114,4 +117,16 @@ export default function Products() {
       )}
     </div>
   );
+}
+
+// The deals rail, built once a day and shared by every visitor. The live
+// search box below it is the only thing on this page that costs a request,
+// and it only costs one when somebody actually types something.
+export async function getStaticProps() {
+  try {
+    const deals = await topDeals();
+    return { props: { deals }, revalidate: 86400 };
+  } catch (e) {
+    return { props: { deals: null }, revalidate: 3600 };
+  }
 }
