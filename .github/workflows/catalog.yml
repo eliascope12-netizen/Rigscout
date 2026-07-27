@@ -1,0 +1,109 @@
+# =============================================================================
+# REBUILD THE PRICE CATALOG
+# -----------------------------------------------------------------------------
+# This is the only thing in the whole project that ever talks to Amazon.
+#
+# The live site makes zero API requests — it serves data/catalog.json, which is
+# a file committed to this repository. This workflow is what refreshes that
+# file: it runs the build script, gets fresh prices, commits the result, and
+# the push makes Vercel redeploy automatically. Nothing to install, no terminal.
+#
+# -----------------------------------------------------------------------------
+# WHAT IT COSTS
+# -----------------------------------------------------------------------------
+# One run spends about 33 API requests (27 searches plus up to 6 top-ups when a
+# category comes up short). The RapidAPI free plan gives 100 a month.
+#
+#   2 scheduled runs (1st and 15th)   = ~66
+#   1 manual run if you want one      = ~33
+#                                       ----
+#                                       ~99 of 100
+#
+# That is the entire budget and it is deliberately tight against it. If you add
+# a third scheduled day you will run out, the run will fail on a 403, and the
+# script will refuse to write — which leaves the last good catalog in place
+# rather than replacing it with nothing. Failing safe, but still failing.
+#
+# -----------------------------------------------------------------------------
+# SETUP (once)
+# -----------------------------------------------------------------------------
+#   Settings → Secrets and variables → Actions → New repository secret
+#     Name:   RAPIDAPI_KEY
+#     Value:  your key from rapidapi.com
+#
+# The key lives there and nowhere else. It is never in the code, never in the
+# committed catalog, and never sent to the browser — this workflow is the only
+# thing that reads it, and it runs on GitHub's machines, not on the website.
+#
+# -----------------------------------------------------------------------------
+# RUNNING IT BY HAND
+# -----------------------------------------------------------------------------
+#   Actions tab → "Rebuild price catalog" → Run workflow
+#
+# One note about the schedule: GitHub switches off scheduled workflows in
+# repositories that have had no activity for 60 days. If prices stop updating,
+# that is the first thing to check — a single manual run switches it back on.
+# =============================================================================
+
+name: Rebuild price catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 09:00 UTC on the 1st and the 15th. Twice a month keeps prices inside a
+    # fortnight, which is what the date on the page promises.
+    - cron: "0 9 1,15 * *"
+
+# The job commits back to the repository, so it needs write access. This is the
+# narrowest permission that lets it do that and nothing else.
+permissions:
+  contents: write
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch prices and rebuild data/catalog.json
+        env:
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+        run: |
+          if [ -z "$RAPIDAPI_KEY" ]; then
+            echo "::error::RAPIDAPI_KEY secret is not set. Add it under"
+            echo "::error::Settings → Secrets and variables → Actions, then run this again."
+            exit 1
+          fi
+          node scripts/build-catalog.mjs
+
+      - name: Refuse to publish placeholder data
+        run: |
+          # The build script marks the catalog when the ASINs in it aren't real
+          # Amazon identifiers. If that flag is set, something went wrong badly
+          # enough that the site would end up showing invented prices — so stop
+          # here and leave the previous catalog in place.
+          if node -e "process.exit(require('./data/catalog.json').sample ? 1 : 0)"; then
+            echo "Catalog contains real Amazon listings."
+          else
+            echo "::error::The rebuilt catalog is placeholder data, not real listings."
+            echo "::error::Nothing has been committed. Check the RAPIDAPI_KEY secret."
+            exit 1
+          fi
+
+      - name: Commit the new prices
+        run: |
+          git config user.name  "rigscout-catalog"
+          git config user.email "actions@github.com"
+          git add data/catalog.json
+          if git diff --staged --quiet; then
+            echo "Prices are unchanged since the last run — nothing to commit."
+            exit 0
+          fi
+          BUILT=$(node -e "console.log(require('./data/catalog.json').builtAt)")
+          SHELF=$(node -e "console.log(require('./data/catalog.json').shelf)")
+          git commit -m "Catalog rebuilt ${BUILT} — ${SHELF} products per category"
+          git push
