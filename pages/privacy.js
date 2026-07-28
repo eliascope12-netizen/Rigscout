@@ -19,6 +19,7 @@
 // ============================================================================
 import Head from "next/head";
 import Link from "next/link";
+import { AMAZON_AFFILIATE_LIVE } from "../lib/partners";
 
 export default function Privacy() {
   return (
@@ -76,18 +77,31 @@ export default function Privacy() {
         </p>
 
         <h2>Amazon links</h2>
-        <p>
-          Product links carry our Amazon Associates tag. When you follow one, Amazon knows the visit
-          came from us and, if you buy something, credits us a commission. What Amazon records about
-          you at that point is governed by Amazon&apos;s privacy notice, not this one — we receive
-          only anonymous, aggregated earnings figures, never who bought what.
-        </p>
-        <p>
-          Clicking through also sets a cookie on Amazon&apos;s side that lasts around a day. Nothing
-          about that is unusual for affiliate links; it is simply how the crediting works. We
-          explain the money side in full on the{" "}
-          <Link href="/disclosure" className="ilink">disclosure page</Link>.
-        </p>
+        {AMAZON_AFFILIATE_LIVE ? (
+          <>
+            <p>
+              Product links carry our Amazon Associates tag. When you follow one, Amazon knows the
+              visit came from us and, if you buy something, credits us a commission. What Amazon
+              records about you at that point is governed by Amazon&apos;s privacy notice, not this
+              one — we receive only anonymous, aggregated earnings figures, never who bought what.
+            </p>
+            <p>
+              Clicking through also sets a cookie on Amazon&apos;s side that lasts around a day.
+              Nothing about that is unusual for affiliate links; it is simply how the crediting
+              works. We explain the money side in full on the{" "}
+              <Link href="/disclosure" className="ilink">disclosure page</Link>.
+            </p>
+          </>
+        ) : (
+          <p>
+            Product links go to Amazon and carry no tracking parameter of ours — we aren&apos;t in
+            Amazon&apos;s affiliate program yet, so there is nothing to credit and nothing added
+            to the link. Following one is the same as typing the address yourself, and from that
+            point Amazon&apos;s own privacy notice applies rather than this one. If we do join, this
+            paragraph and the <Link href="/disclosure" className="ilink">disclosure page</Link> get
+            updated in the same change that adds the tag.
+          </p>
+        )}
 
         <h2>YouTube on the guides page</h2>
         <p>

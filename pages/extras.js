@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import DiscordCTA from "../components/DiscordCTA";
-import { PARTNERS } from "../lib/partners";
+import { PARTNERS, HAS_AFFILIATE_LINKS } from "../lib/partners";
 
 export default function Extras() {
   return (
@@ -25,14 +25,30 @@ export default function Extras() {
       <div className="honestbox">
         <span className="hb-mark">i</span>
         <div>
-          <strong>These are affiliate links.</strong>
-          <p>
-            If you sign up through one, we get paid and you pay exactly the same price. That&apos;s
-            the whole arrangement. It doesn&apos;t buy anyone a better write-up — every entry below
-            includes the case for not buying it, and one of them is here mostly so we can tell you
-            what it <em>won&apos;t</em> do. More on how we handle this in the{" "}
-            <Link href="/disclosure" className="ilink">disclosure</Link>.
-          </p>
+          {HAS_AFFILIATE_LINKS ? (
+            <>
+              <strong>These are affiliate links.</strong>
+              <p>
+                If you sign up through one, we get paid and you pay exactly the same price.
+                That&apos;s the whole arrangement. It doesn&apos;t buy anyone a better write-up —
+                every entry below includes the case for not buying it, and one of them is here
+                mostly so we can tell you what it <em>won&apos;t</em> do. More on how we handle this
+                in the <Link href="/disclosure" className="ilink">disclosure</Link>.
+              </p>
+            </>
+          ) : (
+            <>
+              <strong>Nobody pays us for these — not yet.</strong>
+              <p>
+                These are plain links to the companies&apos; own sites. We aren&apos;t in their
+                affiliate programs, so clicking one earns us nothing. We intend to apply, and when
+                that happens this box will say so instead of what it says now — but the write-ups
+                below were made before there was any money attached, and each one still includes the
+                case for not buying it. More in the{" "}
+                <Link href="/disclosure" className="ilink">disclosure</Link>.
+              </p>
+            </>
+          )}
         </div>
       </div>
 

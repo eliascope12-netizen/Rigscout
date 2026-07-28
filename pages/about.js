@@ -11,6 +11,7 @@
 // ============================================================================
 import Head from "next/head";
 import Link from "next/link";
+import { AMAZON_AFFILIATE_LIVE, HAS_AFFILIATE_LINKS } from "../lib/partners";
 
 export default function About() {
   return (
@@ -67,14 +68,26 @@ export default function About() {
         </p>
 
         <h2>How it makes money</h2>
-        <p>
-          Commission on Amazon links, and on a handful of services listed under{" "}
-          <Link href="/extras" className="ilink">Beyond the Build</Link>. You pay exactly the same
-          price either way. There are no adverts anywhere on the site and no sponsored placements —
-          nobody can pay to appear here or to rank higher, and no manufacturer has any input into
-          what gets listed. The full detail is on the{" "}
-          <Link href="/disclosure" className="ilink">disclosure page</Link>.
-        </p>
+        {AMAZON_AFFILIATE_LIVE || HAS_AFFILIATE_LINKS ? (
+          <p>
+            Commission on Amazon links, and on a handful of services listed under{" "}
+            <Link href="/extras" className="ilink">Beyond the Build</Link>. You pay exactly the same
+            price either way. There are no adverts anywhere on the site and no sponsored placements
+            — nobody can pay to appear here or to rank higher, and no manufacturer has any input
+            into what gets listed. The full detail is on the{" "}
+            <Link href="/disclosure" className="ilink">disclosure page</Link>.
+          </p>
+        ) : (
+          <p>
+            Right now, it doesn&apos;t. Nothing on the site earns us anything — we haven&apos;t
+            joined Amazon&apos;s affiliate program or any of the ones run by the services under{" "}
+            <Link href="/extras" className="ilink">Beyond the Build</Link>, so every link here is a
+            plain link. The intention is to add commission later, and when that happens this page
+            and the <Link href="/disclosure" className="ilink">disclosure page</Link> will say so
+            before a single link changes. There are no adverts and no sponsored placements either —
+            nobody can pay to appear here or to rank higher.
+          </p>
+        )}
 
         <h2>Things this site won&apos;t do</h2>
         <p>
