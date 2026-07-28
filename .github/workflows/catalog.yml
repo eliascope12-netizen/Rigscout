@@ -14,15 +14,23 @@
 # One run spends about 33 API requests (27 searches plus up to 6 top-ups when a
 # category comes up short). The RapidAPI free plan gives 100 a month.
 #
-#   2 scheduled runs (1st and 15th)   = ~66
-#   1 manual run if you want one      = ~33
+#   1 scheduled run                   = ~33
+#   2 manual runs / retries spare     = ~66
 #                                       ----
 #                                       ~99 of 100
 #
-# That is the entire budget and it is deliberately tight against it. If you add
-# a third scheduled day you will run out, the run will fail on a 403, and the
-# script will refuse to write — which leaves the last good catalog in place
-# rather than replacing it with nothing. Failing safe, but still failing.
+# This used to run twice a month, which spent 66 of the 100 and left no room to
+# retry a bad run. That is a bad trade: a rebuild that fails halfway is far more
+# likely than prices moving enough in two weeks to matter, and with no headroom
+# the only fix was to wait for the next month. One scheduled run a month, two
+# retries in reserve.
+#
+# IMPORTANT — WHEN THE MONTH RESETS
+# A RapidAPI free plan does NOT reset on the 1st. It resets on the day of the
+# month you subscribed. This one was subscribed on the 23rd, so the schedule
+# below runs on the 24th: the day after a fresh 100 requests appear. Check the
+# real date under Billing → Subscriptions & Usage before changing it, and move
+# the cron day with it if you ever resubscribe.
 #
 # -----------------------------------------------------------------------------
 # SETUP (once)
@@ -50,9 +58,9 @@ name: Rebuild price catalog
 on:
   workflow_dispatch:
   schedule:
-    # 09:00 UTC on the 1st and the 15th. Twice a month keeps prices inside a
-    # fortnight, which is what the date on the page promises.
-    - cron: "0 9 1,15 * *"
+    # 09:00 UTC on the 24th — the morning after the plan's quota rolls over.
+    # See the note above: this date tracks the subscription date, not the 1st.
+    - cron: "0 9 24 * *"
 
 # The job commits back to the repository, so it needs write access. This is the
 # narrowest permission that lets it do that and nothing else.
