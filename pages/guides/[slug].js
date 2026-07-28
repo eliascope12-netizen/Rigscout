@@ -14,6 +14,7 @@ import Link from "next/link";
 import GuideBlocks from "../../components/GuideBlocks";
 import DiscordCTA from "../../components/DiscordCTA";
 import { getGuide, guideSlugs, otherGuides } from "../../lib/guides";
+import { AMAZON_AFFILIATE_LIVE } from "../../lib/partners";
 
 export async function getStaticPaths() {
   return { paths: guideSlugs().map((slug) => ({ params: { slug } })), fallback: false };
@@ -67,13 +68,28 @@ export default function Guide({ guide, more }) {
         <div className="honestbox" style={{ marginTop: 26 }}>
           <span className="hb-mark">i</span>
           <div>
-            <strong>How this site makes money.</strong>
-            <p>
-              As an Amazon Associate we earn from qualifying purchases. If you buy through a link
-              here, the price you pay is exactly the same and we get a small commission. Prices on
-              our shelves come from a dated snapshot, not a live feed, so check the figure on Amazon
-              before you commit — that&apos;s the one that counts.
-            </p>
+            {AMAZON_AFFILIATE_LIVE ? (
+              <>
+                <strong>How this site makes money.</strong>
+                <p>
+                  As an Amazon Associate we earn from qualifying purchases. If you buy through a
+                  link here, the price you pay is exactly the same and we get a small commission.
+                  Prices on our shelves come from a dated snapshot, not a live feed, so check the
+                  figure on Amazon before you commit — that&apos;s the one that counts.
+                </p>
+              </>
+            ) : (
+              <>
+                <strong>Nobody is paying us for this.</strong>
+                <p>
+                  We aren&apos;t in Amazon&apos;s affiliate program yet, so the product links here
+                  earn us nothing — this article was written with no commission attached to it. If
+                  that changes, this box changes with it. Prices on our shelves come from a dated
+                  snapshot, not a live feed, so check the figure on Amazon before you commit —
+                  that&apos;s the one that counts.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </article>
