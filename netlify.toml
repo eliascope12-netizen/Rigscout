@@ -1,0 +1,65 @@
+# =============================================================================
+# NETLIFY BUILD CONFIG
+# -----------------------------------------------------------------------------
+# Why this file exists: Vercel's Hobby plan is non-commercial only. Their fair
+# use guidelines name "affiliate linking is the primary purpose of the site" as
+# commercial usage requiring a paid plan. Netlify's free Starter plan allows
+# commercial use, so this site lives here instead.
+#
+# -----------------------------------------------------------------------------
+# CONNECTING THE SITE (once)
+# -----------------------------------------------------------------------------
+#   app.netlify.com → Add new site → Import an existing project → GitHub
+#   → pick Rigscout → Deploy
+#
+# Netlify reads this file and needs nothing else. Do NOT set a publish
+# directory by hand in the UI — the Next.js plugin below sets it, and a manual
+# value overrides the plugin and breaks the build.
+#
+# -----------------------------------------------------------------------------
+# ENVIRONMENT VARIABLES
+# -----------------------------------------------------------------------------
+# The site needs NONE of these to build or serve. Every one of them only turns
+# an extra feature on, and the site is designed to work correctly without them.
+#
+#   AMAZON_ASSOCIATE_TAG    Your Associates tracking id. Until this is set,
+#                           every Buy button links to Amazon untagged and earns
+#                           nothing. This is the one that matters.
+#   NEXT_PUBLIC_BACKBLAZE_URL / _BISECT_URL / _VPN_URL
+#                           Partner links on /extras. Unset partners are hidden
+#                           rather than shown as dead links.
+#
+# Deliberately NOT set here: RAPIDAPI_KEY. Nothing the visitor touches needs it.
+# Prices come from data/catalog.json, which is committed to the repo and
+# rebuilt by the GitHub Action. The key lives in a GitHub Actions secret and
+# never reaches the hosting environment at all — which means a hosting account
+# compromise cannot leak it, and no visitor can spend the quota.
+#
+# The one exception is live search, which is off unless BOTH LIVE_SEARCH=1 and
+# RAPIDAPI_KEY are set. Leave it off. On a 100-request monthly plan one curious
+# visitor with a search box can drain a month in a minute.
+# =============================================================================
+
+[build]
+  command = "npm run build"
+
+# Pinned rather than left to drift. Next 14 needs 18+, and a runner that
+# silently moves to a new major is a build that breaks on a day you did not
+# touch the code.
+[build.environment]
+  NODE_VERSION = "20"
+
+# Netlify installs this from its own registry — it does not belong in
+# package.json. It is what teaches Netlify to serve a Next.js app: static pages
+# from the CDN, the three /api routes as functions.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Amazon product images are hotlinked from Amazon's CDN, as the Associates
+# terms require. Nothing here proxies or re-hosts them.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
