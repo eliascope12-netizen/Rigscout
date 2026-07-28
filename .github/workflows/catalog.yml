@@ -12,7 +12,12 @@
 # WHAT IT COSTS
 # -----------------------------------------------------------------------------
 # One run spends about 33 API requests (27 searches plus up to 6 top-ups when a
-# category comes up short). The RapidAPI free plan gives 100 a month.
+# category comes up short). The free plan gives 100 a month.
+#
+# The API is Axesso "Amazon Data Service" on RapidAPI. Its free plan is a HARD
+# limit: at 100 requests it refuses, it does not start charging. Several of the
+# cheaper-looking alternatives are "20 free, then ten cents each" and want a
+# card on file before they will let you subscribe at all. This one does not.
 #
 #   1 scheduled run                   = ~33
 #   2 manual runs / retries spare     = ~66
@@ -27,10 +32,13 @@
 #
 # IMPORTANT — WHEN THE MONTH RESETS
 # A RapidAPI free plan does NOT reset on the 1st. It resets on the day of the
-# month you subscribed. This one was subscribed on the 23rd, so the schedule
-# below runs on the 24th: the day after a fresh 100 requests appear. Check the
-# real date under Billing → Subscriptions & Usage before changing it, and move
-# the cron day with it if you ever resubscribe.
+# month you subscribed. This one was subscribed on 28 July 2026, so the
+# schedule below runs on the 29th: the day after a fresh 100 requests appear.
+# Check the real date under Billing → Subscriptions & Usage before changing it,
+# and move the cron day with it if you ever resubscribe or switch APIs.
+#
+# Quotas are counted per API subscription, not per account — so the 100 here is
+# untouched by anything spent on any other API subscribed with the same key.
 #
 # -----------------------------------------------------------------------------
 # SETUP (once)
@@ -58,9 +66,9 @@ name: Rebuild price catalog
 on:
   workflow_dispatch:
   schedule:
-    # 09:00 UTC on the 24th — the morning after the plan's quota rolls over.
+    # 09:00 UTC on the 29th — the morning after the plan's quota rolls over.
     # See the note above: this date tracks the subscription date, not the 1st.
-    - cron: "0 9 24 * *"
+    - cron: "0 9 29 * *"
 
 # The job commits back to the repository, so it needs write access. This is the
 # narrowest permission that lets it do that and nothing else.
