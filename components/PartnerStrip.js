@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PARTNERS } from "../lib/partners";
+import { PARTNERS, HAS_AFFILIATE_LINKS } from "../lib/partners";
 
 /* The compact version — three one-liners, no pitch. It appears under a
    finished build, where the job is to mention these exist and then get out of
@@ -32,8 +32,18 @@ export default function PartnerStrip({ title = "Worth thinking about after it's 
         Read the full rundown, caveats included →
       </Link>
       <div className="ps-disc">
-        These are affiliate links. They cost you nothing extra and they don&apos;t change what we
-        recommend — <Link href="/disclosure" className="ilink">how that works</Link>.
+        {HAS_AFFILIATE_LINKS ? (
+          <>
+            These are affiliate links. They cost you nothing extra and they don&apos;t change what
+            we recommend — <Link href="/disclosure" className="ilink">how that works</Link>.
+          </>
+        ) : (
+          <>
+            These are plain links — we&apos;re not in any of these companies&apos; affiliate
+            programs yet, so nobody pays us if you click.{" "}
+            <Link href="/disclosure" className="ilink">How that will work if it changes</Link>.
+          </>
+        )}
       </div>
     </div>
   );

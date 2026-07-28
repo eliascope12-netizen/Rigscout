@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { DiscordIcon } from "./DiscordCTA";
-import { DISCORD_INVITE } from "../lib/partners";
+import { DISCORD_INVITE, AMAZON_AFFILIATE_LIVE } from "../lib/partners";
 
 const LINKS = [
   ["/", "Home"],
@@ -15,9 +16,30 @@ const LINKS = [
 
 export default function Layout({ children }) {
   const { pathname } = useRouter();
+
+  // ---------------------------------------------------------------------
+  // The nav used to be a single row that turned into a horizontal scroller
+  // on small screens. In practice that means six of the seven destinations
+  // are off the right edge with no visible hint they exist — on a phone the
+  // site looked like it had two pages. Below 860px the links now live in a
+  // real menu instead.
+  // ---------------------------------------------------------------------
+  const [open, setOpen] = useState(false);
+
+  // Close on navigation, otherwise the panel stays open over the new page.
+  useEffect(() => { setOpen(false); }, [pathname]);
+
+  // Escape closes it, same as every other overlay on the site.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <>
-      <nav className="nav">
+      <nav className={"nav" + (open ? " open" : "")}>
         <div className="wrap">
           <Link href="/" className="brand">
             <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
@@ -27,18 +49,38 @@ export default function Layout({ children }) {
             </svg>
             <span>RigScout</span>
           </Link>
-          {LINKS.slice(1).map(([href, label]) => {
-            const on = pathname === href || (href !== "/" && pathname.startsWith(href + "/"));
-            return <Link key={href} href={href} className={"link" + (on ? " active" : "")}>{label}</Link>;
-          })}
-          <span className="spacer" />
-          <a className="navdisc" href={DISCORD_INVITE} target="_blank" rel="noopener" title="Join the RigScout Discord">
-            <DiscordIcon size={16} />
-            <span>Discord</span>
-          </a>
-          <Link href="/upgrade" className="btn sm">Analyze my build</Link>
+
+          <button
+            className="navtoggle"
+            type="button"
+            aria-expanded={open}
+            aria-controls="navmenu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className={"burger" + (open ? " x" : "")}><i /><i /><i /></span>
+            <span className="navtoggle-t">Menu</span>
+          </button>
+
+          <div className={"navlinks" + (open ? " open" : "")} id="navmenu">
+            {LINKS.slice(1).map(([href, label]) => {
+              const on = pathname === href || (href !== "/" && pathname.startsWith(href + "/"));
+              return <Link key={href} href={href} className={"link" + (on ? " active" : "")}>{label}</Link>;
+            })}
+            <span className="spacer" />
+            <a className="navdisc" href={DISCORD_INVITE} target="_blank" rel="noopener" title="Join the RigScout Discord">
+              <DiscordIcon size={16} />
+              <span>Discord</span>
+            </a>
+            <Link href="/upgrade" className="btn sm">Analyze my build</Link>
+          </div>
         </div>
       </nav>
+
+      {/* Tapping anywhere off the menu closes it. Rendered only when open so it
+          never sits in front of the page on a desktop. */}
+      {open && <button className="navscrim" aria-label="Close menu" onClick={() => setOpen(false)} />}
+
       <main>{children}</main>
       <footer className="foot">
         <div className="wrap footrow">
@@ -58,7 +100,16 @@ export default function Layout({ children }) {
             <Link href="/privacy">Privacy</Link>
             <Link href="/contact">Contact</Link>
           </span>
-          <span>As an Amazon Associate, we earn from qualifying purchases.</span>
+          {/*
+            The Associates line is required once you're in the program — and
+            forbidden before you are, because it claims a relationship with
+            Amazon that doesn't exist yet. It appears the moment the tag is set.
+          */}
+          <span>
+            {AMAZON_AFFILIATE_LIVE
+              ? "As an Amazon Associate, we earn from qualifying purchases."
+              : "No ads, no sponsored placements, no affiliate income yet."}
+          </span>
         </div>
       </footer>
     </>

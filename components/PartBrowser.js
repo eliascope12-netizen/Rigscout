@@ -47,6 +47,11 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
   const [sort, setSort] = useState("price");
   const [shown, setShown] = useState(PAGE);
   const [onlyFits, setOnlyFits] = useState(true);
+  // Narrow screens only. The filter column is the first thing in the DOM, which
+  // on a phone meant opening the part picker showed you a wall of checkboxes
+  // before a single product. Below 980px the column becomes a sheet that stays
+  // shut until asked for; on desktop this flag is ignored entirely.
+  const [filtOpen, setFiltOpen] = useState(false);
   const [maxPrice, setMaxPrice] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const seen = useRef(new Set(preseeded ? (initial.products || []).map((p) => p.asin) : []));
@@ -165,10 +170,14 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
   return (
     <div className={"browser" + (embedded ? " embedded" : "")}>
       {/* ---------------- sidebar ---------------- */}
-      <aside className="bx-side">
+      {filtOpen && <button className="bx-scrim" aria-label="Close filters" onClick={() => setFiltOpen(false)} />}
+      <aside className={"bx-side" + (filtOpen ? " open" : "")}>
         <div className="bx-sidehead">
           <strong>Filters</strong>
           {activeCount > 0 && <button className="linkbtn" onClick={clearAll}>Clear {activeCount}</button>}
+          <button className="btn sm bx-filtdone" onClick={() => setFiltOpen(false)}>
+            Show {rows.length.toLocaleString()} {rows.length === 1 ? "result" : "results"}
+          </button>
         </div>
 
         <div className="facet">
@@ -209,6 +218,13 @@ export default function PartBrowser({ cat, build, onPick, onClose, embedded, ini
             {q && <button type="button" className="linkbtn" onClick={() => { setTyped(""); setQ(""); setShown(PAGE); load({ t: 0 }); }}>Clear</button>}
           </form>
           <div className="bx-tools">
+            <button
+              type="button"
+              className={"btn sm ghost bx-filtbtn" + (activeCount ? " on" : "")}
+              onClick={() => setFiltOpen(true)}
+            >
+              Filters{activeCount ? ` (${activeCount})` : ""}
+            </button>
             <select value={sort} onChange={(e) => setSort(e.target.value)}>
               {SORTS.map((s) => <option key={s.k} value={s.k}>{s.label}</option>)}
             </select>
