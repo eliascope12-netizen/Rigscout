@@ -43,10 +43,20 @@ export default function Layout({ children }) {
       <footer className="foot">
         <div className="wrap footrow">
           <span>© 2026 RigScout</span>
+          {/*
+            About / Privacy / Contact are here rather than tucked away because
+            Associates reviewers look for them in the footer, and because a site
+            that takes commission and hides who runs it has earned the suspicion
+            it gets.
+          */}
           <span className="footlinks">
             <a href={DISCORD_INVITE} target="_blank" rel="noopener">Discord</a>
+            <Link href="/about">About</Link>
+            <Link href="/guides">Guides</Link>
             <Link href="/extras">Beyond the Build</Link>
             <Link href="/disclosure">How we make money</Link>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/contact">Contact</Link>
           </span>
           <span>As an Amazon Associate, we earn from qualifying purchases.</span>
         </div>
