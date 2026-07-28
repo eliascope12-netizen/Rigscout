@@ -584,3 +584,62 @@ h3{font-size:18px;margin:0 0 6px;font-weight:750}
   .diagbox,.avoidbox{flex-direction:column;gap:12px}
   .widewrap,.wrap{padding:0 16px}
 }
+
+/* ==========================================================================
+   GUIDES — index cards and article typography
+   --------------------------------------------------------------------------
+   Article measure is capped at 68ch rather than a pixel width. Long-form text
+   is unpleasant to read past roughly 75 characters a line regardless of screen
+   size, and a pixel cap gets that wrong at every font size but one.
+   ========================================================================== */
+
+.g-index{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:26px 0 6px}
+.g-card{display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:var(--bg-2);border:1px solid var(--line);transition:border-color .15s,background .15s}
+.g-card:hover{border-color:var(--accent);background:var(--bg-3)}
+.g-card .tag{align-self:flex-start;background:rgba(79,140,255,.14);color:#8fb8ff}
+.g-card h3{margin:0;font-size:16.5px;line-height:1.35;color:var(--text)}
+.g-card p{margin:0;color:var(--muted);font-size:13.8px;line-height:1.55}
+.g-meta{margin-top:auto;padding-top:6px;color:var(--faint);font-size:12.5px;font-weight:650}
+
+.g-crumb{margin:0 0 10px;font-size:13.5px}
+.g-article{max-width:68ch}
+.g-article h1{margin-bottom:10px}
+.g-article .lead{max-width:none;font-size:18.5px}
+.g-byline{margin:14px 0 0;padding-bottom:22px;border-bottom:1px solid var(--line);color:var(--faint);font-size:13px;font-weight:650}
+
+.g-body{font-size:16.5px;line-height:1.72}
+.g-body p{margin:0 0 18px;color:#dbe3f4}
+.g-body h2{margin:34px 0 12px;font-size:22px;line-height:1.3;letter-spacing:-.2px}
+.g-body h2:first-child{margin-top:24px}
+
+.g-list,.g-steps{margin:0 0 20px;padding-left:22px;color:#dbe3f4}
+.g-list li,.g-steps li{margin-bottom:11px;padding-left:4px}
+.g-list li::marker{color:var(--accent)}
+.g-steps li::marker{color:var(--accent);font-weight:800}
+
+/* Asides break the measure deliberately — the whole point is that the eye
+   stops here. Warn is the stronger of the two and is reserved for things that
+   cost money if ignored. */
+.g-note{display:flex;gap:14px;margin:24px 0;padding:16px 20px;border-radius:14px;background:var(--bg-2);border:1px solid var(--line);border-left:3px solid var(--accent)}
+.g-note p{margin:0;color:var(--muted);font-size:15px;line-height:1.62}
+.g-mark{flex:0 0 26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(79,140,255,.14);color:#8fb8ff;font-weight:850;font-style:italic;font-size:14px}
+.g-warn{border-left-color:var(--warn);background:rgba(255,180,84,.06)}
+.g-warn .g-mark{background:rgba(255,180,84,.16);color:var(--warn);font-style:normal}
+
+.g-tablewrap{margin:22px 0;overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+.g-table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:440px}
+.g-table th{text-align:left;padding:11px 15px;background:var(--bg-3);color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.g-table td{padding:11px 15px;border-top:1px solid var(--line);color:#dbe3f4;vertical-align:top}
+.g-table tr:nth-child(even) td{background:rgba(255,255,255,.012)}
+
+.g-shelf{margin:26px 0;padding:20px 22px;border-radius:16px;background:linear-gradient(140deg,rgba(79,140,255,.12),rgba(56,224,160,.06));border:1px solid var(--line-2)}
+.g-shelf p{margin:0 0 14px;color:var(--muted);font-size:15px;line-height:1.6}
+
+@media (max-width:900px){
+  .g-index{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .g-index{grid-template-columns:1fr}
+  .g-body{font-size:16px}
+  .g-body h2{font-size:20px}
+}
