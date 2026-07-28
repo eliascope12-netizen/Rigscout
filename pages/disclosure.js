@@ -29,10 +29,18 @@ export default function Disclosure() {
           about two and a half — a few dollars on a graphics card, cents on a fan. You pay the list
           price either way; the commission comes out of Amazon&apos;s margin, not your total.
         </p>
+        {/*
+          This paragraph used to say prices were "pulled live from Amazon". That
+          stopped being true when the site moved to a committed catalog snapshot,
+          and a disclosure page that overstates its own accuracy is the worst
+          possible place to leave a stale sentence.
+        */}
         <p>
-          Prices, photos, ratings and review counts on this site are pulled live from Amazon rather
-          than typed in by hand. We don&apos;t set them and we can&apos;t change them. If a price
-          looks wrong, trust the Amazon page.
+          Prices, photos, ratings and review counts on this site come straight from Amazon rather
+          than being typed in by hand — but from a dated snapshot, rebuilt on a schedule, not from a
+          live feed. We don&apos;t set those numbers and we can&apos;t change them. Every page that
+          shows a price also shows when it was taken, and if a price here disagrees with the Amazon
+          page, the Amazon page is right.
         </p>
 
         <h2>The services on Beyond the Build</h2>
@@ -80,9 +88,11 @@ export default function Disclosure() {
 
         <h2>Questions</h2>
         <p>
-          If something here reads like a sales pitch rather than advice, say so in the{" "}
-          <Link href="/extras" className="ilink">Discord</Link> — that&apos;s a fair complaint and
-          we&apos;d rather hear it.
+          If something here reads like a sales pitch rather than advice, say so — that&apos;s a fair
+          complaint and we&apos;d rather hear it. The{" "}
+          <Link href="/contact" className="ilink">contact page</Link> has the ways to reach us, and
+          the <Link href="/about" className="ilink">about page</Link> covers how the site picks and
+          prices what it lists.
         </p>
 
         <p className="faint" style={{ fontSize: 13, marginTop: 26 }}>
