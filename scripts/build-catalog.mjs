@@ -76,10 +76,16 @@ const OUT = path.join(ROOT, "data", "catalog.json");
 // entirely separate from any other API subscribed with the same key.
 //
 // Path and parameters: /amz/amazon-search-by-keyword-asin, taking keyword,
-// domainCode, page and sortBy. One key header covers every RapidAPI service,
-// so RAPIDAPI_KEY did not need to change when the API did.
+// domainCode, page, sortBy, excludeSponsored and withCache. One key header
+// covers every RapidAPI service, so RAPIDAPI_KEY did not change with the API.
+//
+// Note the host. It is NOT the name in the RapidAPI page URL — that reads
+// "axesso-amazon-data-service1", while the gateway answers to the doubled
+// "axesso-axesso-amazon-data-service-v1". Getting this wrong returns 404 on
+// every request. (Those 404s do not count against the quota, which is the
+// only reason the first attempt at this was free.)
 // ---------------------------------------------------------------------------
-const HOST = "axesso-amazon-data-service1.p.rapidapi.com";
+const HOST = "axesso-axesso-amazon-data-service-v1.p.rapidapi.com";
 const SEARCH_PATH = "/amz/amazon-search-by-keyword-asin";
 
 // ---------------------------------------------------------------------------
@@ -159,9 +165,13 @@ function tidy(body) {
 // seconds. There is no hurry.
 // ---------------------------------------------------------------------------
 async function search(key, query, page = 1) {
+  // excludeSponsored is the important one: paid placement is not popularity,
+  // and dropping it at the source means the whole page of results we paid a
+  // request for is organic rather than part advertising.
   const url =
     `https://${HOST}${SEARCH_PATH}?keyword=${encodeURIComponent(query)}` +
-    `&domainCode=com&page=${page}&sortBy=relevanceblender&numberOfProducts=20`;
+    `&domainCode=com&page=${page}&excludeSponsored=true` +
+    `&sortBy=relevanceblender&withCache=true`;
 
   requests += 1;
   const r = await fetch(url, {
