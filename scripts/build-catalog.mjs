@@ -64,7 +64,23 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
 const OUT = path.join(ROOT, "data", "catalog.json");
 
-const HOST = "real-time-amazon-data.p.rapidapi.com";
+// ---------------------------------------------------------------------------
+// WHICH API THIS TALKS TO
+// ---------------------------------------------------------------------------
+// Axesso "Amazon Data Service" on RapidAPI. The free plan is 100 requests a
+// month with a HARD limit — it stops rather than billing, which is the whole
+// reason it was picked over the several cheaper-looking APIs whose free tier
+// is really "20 free, then ten cents each" and demands a card up front.
+//
+// RapidAPI meters per API subscription, not per account, so this quota is
+// entirely separate from any other API subscribed with the same key.
+//
+// Path and parameters: /amz/amazon-search-by-keyword-asin, taking keyword,
+// domainCode, page and sortBy. One key header covers every RapidAPI service,
+// so RAPIDAPI_KEY did not need to change when the API did.
+// ---------------------------------------------------------------------------
+const HOST = "axesso-amazon-data-service1.p.rapidapi.com";
+const SEARCH_PATH = "/amz/amazon-search-by-keyword-asin";
 
 // ---------------------------------------------------------------------------
 // THE TOP-UP BUDGET
@@ -144,8 +160,8 @@ function tidy(body) {
 // ---------------------------------------------------------------------------
 async function search(key, query, page = 1) {
   const url =
-    `https://${HOST}/search?query=${encodeURIComponent(query)}` +
-    `&country=US&page=${page}&sort_by=RELEVANCE`;
+    `https://${HOST}${SEARCH_PATH}?keyword=${encodeURIComponent(query)}` +
+    `&domainCode=com&page=${page}&sortBy=relevanceblender&numberOfProducts=20`;
 
   requests += 1;
   const r = await fetch(url, {
@@ -168,7 +184,41 @@ async function search(key, query, page = 1) {
   if (!r.ok) throw new Error("HTTP " + r.status);
 
   const json = await r.json();
-  return (json && json.data && json.data.products) || [];
+
+  // The API reports its own trouble inside a 200. Surface it rather than
+  // letting an error envelope look like a search that found nothing.
+  if (json && typeof json.statusCode === "number" && json.statusCode !== 200) {
+    throw new Error(`API said ${json.statusCode}: ${json.statusMessage || "no message"}`);
+  }
+
+  return productArray(json);
+}
+
+// ---------------------------------------------------------------------------
+// FIND THE PRODUCTS, WHEREVER THEY ARE
+// ---------------------------------------------------------------------------
+// Every one of these Amazon APIs wraps its results in a different envelope —
+// data.products here, searchProductDetails there, sometimes a bare array — and
+// the wrapper is the single most likely thing to change out from under us on a
+// free plan we do not control. Rather than hard-code one path and have a whole
+// rebuild come back empty the day they rename a key, walk the response and
+// take the first array whose members carry an ASIN. That is unambiguous: no
+// other array in these payloads looks like that.
+// ---------------------------------------------------------------------------
+function productArray(json) {
+  const looksLikeProducts = (v) =>
+    Array.isArray(v) && v.length > 0 && v.some((x) => x && typeof x === "object" && x.asin);
+
+  const seen = new Set();
+  const stack = [json];
+  while (stack.length) {
+    const node = stack.shift();
+    if (!node || typeof node !== "object" || seen.has(node)) continue;
+    seen.add(node);
+    if (looksLikeProducts(node)) return node;
+    for (const v of Object.values(node)) if (v && typeof v === "object") stack.push(v);
+  }
+  return [];
 }
 
 async function searchWithRetry(key, query, page = 1) {
@@ -211,29 +261,72 @@ function parsePrice(str) {
 // hundreds of records would bloat the file for no reason. A missing photo is
 // stored as null and the placeholder is drawn at render time.
 // ---------------------------------------------------------------------------
+// A rating arrives as "4.6", "4.6 out of 5 stars", or with a comma decimal on
+// the European storefronts. Take the first number and ignore the prose.
+function parseRating(v) {
+  if (v == null) return null;
+  const m = String(v).replace(",", ".").match(/\d+(\.\d+)?/);
+  if (!m) return null;
+  const n = parseFloat(m[0]);
+  return n >= 0 && n <= 5 ? n : null;
+}
+
+// "2K+ bought in past month" -> 2000. This is a stronger popularity signal
+// than the field it replaces: the old API exposed Amazon's best-seller badge,
+// which is awarded per narrow sub-category and so decorates an obscure part as
+// readily as a popular one. Units actually sold last month is the thing the
+// shelf is really trying to rank by.
+function parseBought(v) {
+  if (v == null) return 0;
+  const m = String(v).match(/([\d.,]+)\s*([KkMm])?\+?/);
+  if (!m) return 0;
+  const n = parseFloat(m[1].replace(/,/g, ""));
+  if (!Number.isFinite(n)) return 0;
+  const mult = /k/i.test(m[2] || "") ? 1000 : /m/i.test(m[2] || "") ? 1000000 : 1;
+  return Math.round(n * mult);
+}
+
 function shape(p) {
-  if (!p || !p.product_title || !p.asin) return null;
-  const price = parsePrice(p.product_price);
+  if (!p || !p.asin) return null;
+
+  // Paid placement is not popularity. A sponsored row is on the page because
+  // someone bid for it, so it has no business on a shelf that claims to show
+  // the most popular parts — drop it before it can be ranked.
+  if (p.sponsored === true) return null;
+
+  const title = p.productDescription || p.title || p.name || "";
+  if (!title) return null;
+
+  const price = parsePrice(p.price);
   if (!price) return null; // no price means nothing to compare or link to
+
+  const bought = parseBought(p.salesVolume);
 
   return {
     asin: String(p.asin),
-    title: String(p.product_title).slice(0, 220),
+    title: String(title).slice(0, 220),
     price,
-    was: parsePrice(p.product_original_price),
-    image: p.product_photo || null,
-    url: p.product_url || "https://www.amazon.com/dp/" + p.asin,
-    rating: p.product_star_rating ? parseFloat(p.product_star_rating) : null,
-    reviews: p.product_num_ratings ? parseInt(p.product_num_ratings, 10) : null,
-    prime: Boolean(p.is_prime),
-    bestSeller: Boolean(p.is_best_seller),
+    was: parsePrice(p.retailPrice),
+    image: p.imgUrl || p.imageUrl || null,
+    // Deliberately the canonical /dp/ URL rather than the one in the response:
+    // the response URL carries search-position and referral junk, and a bare
+    // canonical link is what lib/staticCatalog.js expects to append the tag to.
+    url: "https://www.amazon.com/dp/" + p.asin,
+    rating: parseRating(p.productRating),
+    reviews: Number.isFinite(Number(p.countReview)) ? Number(p.countReview) : null,
+    prime: Boolean(p.prime),
+    // Kept under the old name so nothing downstream has to change. It now
+    // means "sold in real volume last month" instead of "wears Amazon's
+    // best-seller badge", which is the better version of the same idea.
+    bestSeller: bought >= 500,
   };
 }
 
 // ---------------------------------------------------------------------------
 // The popularity bands. Lower number sorts first.
 //
-//   0  Amazon's own best-seller flag. Their data, not our guess.
+//   0  Sold in real volume last month, per Amazon's own "N bought in past
+//      month" figure. Their data, not our guess.
 //   1  Well reviewed and widely bought — the main body of any healthy shelf.
 //   2  Well reviewed, fewer buyers. Newer parts live here.
 //   3  Decent, unremarkable.
