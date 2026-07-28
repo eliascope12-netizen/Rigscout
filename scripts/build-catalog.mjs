@@ -114,6 +114,29 @@ let failures = 0;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ---------------------------------------------------------------------------
+// The one error nobody should retry.
+//
+// Everything else here is transient — a slow gateway, a hiccup, a burst that
+// tripped the per-second limiter. Quota is different in kind: the answer will
+// be identical in three seconds and in three hours, and the only cure is a new
+// month or a bigger plan. It gets its own type so it can travel all the way up
+// through the retry and the category loop without anyone politely swallowing
+// it and carrying on with an empty shelf.
+// ---------------------------------------------------------------------------
+class Quota extends Error {}
+
+// RapidAPI's message arrives as JSON more often than not, and the useful part
+// is one sentence buried in it. Pull that out; fall back to the raw text.
+function tidy(body) {
+  if (!body) return "";
+  try {
+    const j = JSON.parse(body);
+    if (typeof j.message === "string") return j.message.trim();
+  } catch {}
+  return String(body).slice(0, 300).trim();
+}
+
+// ---------------------------------------------------------------------------
 // One search. One request. Deliberately not parallel: the free plan rate-limits
 // hard, and losing a request to a 429 is losing real money from a hundred-a-
 // month budget. Twenty-seven requests at a quarter-second apart is seven
@@ -129,12 +152,18 @@ async function search(key, query, page = 1) {
     headers: { "x-rapidapi-key": key, "x-rapidapi-host": HOST },
   });
 
+  // RapidAPI answers 429 for two completely different things: "you are going
+  // too fast" and "your month is over". The first is worth waiting out. The
+  // second cannot be waited out, and retrying it 66 times is how this script
+  // once spent two minutes printing the same line. The body says which.
   if (r.status === 429) {
-    // Rate limited, not out of quota. Wait and let the caller retry.
+    const why = await r.text().catch(() => "");
+    if (/quota|exceeded/i.test(why)) throw new Quota(tidy(why));
     throw new Error("rate limited (429) — slow down");
   }
   if (r.status === 403) {
-    throw new Error("403 — key rejected, or the monthly quota is spent");
+    // 403 is "not subscribed" or "bad key" — also not worth a second ask.
+    throw new Quota(tidy(await r.text().catch(() => "")) || "403 — key rejected");
   }
   if (!r.ok) throw new Error("HTTP " + r.status);
 
@@ -146,10 +175,10 @@ async function searchWithRetry(key, query, page = 1) {
   try {
     return await search(key, query, page);
   } catch (e) {
-    // One retry, and only for the transient case. A 403 means the key or the
-    // quota is the problem, and asking again just spends another request to be
-    // told the same thing.
-    if (/403/.test(e.message)) throw e;
+    // One retry, and only for the transient case. A spent quota or a rejected
+    // key means asking again just spends another request to be told the same
+    // thing — so it goes straight up and stops the run.
+    if (e instanceof Quota) throw e;
     console.log(`      retrying after: ${e.message}`);
     await sleep(3000);
     try {
@@ -528,6 +557,20 @@ async function main() {
 }
 
 main().catch((e) => {
+  if (e instanceof Quota) {
+    // Not a bug, and not something a rebuild will fix. Say so in the words
+    // someone reading a red X on GitHub actually needs.
+    console.error(
+      `\nSTOPPED — the API turned us away on request ${requests}.\n\n` +
+        `  ${e.message}\n\n` +
+        `Nothing was written; data/catalog.json is exactly as it was.\n\n` +
+        `This is a plan limit, not a broken build. Check the quota at\n` +
+        `rapidapi.com > Billing > Subscriptions & Usage. A free plan resets on\n` +
+        `the day of the month you subscribed, not on the 1st. Re-running before\n` +
+        `then will land here again.\n`
+    );
+    process.exit(1);
+  }
   console.error("\nFailed: " + (e && e.message ? e.message : e));
   console.error(`Requests used before the failure: ${requests}`);
   console.error("data/catalog.json is untouched.\n");
